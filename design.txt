@@ -1,0 +1,38 @@
+Class
+
+Resource
+Request
+Response
+Property
+Permission
+Access Control
+Session
+CRUD
+API
+Authenication
+Mapping Properties
+Resource Adapters
+Filtering
+Pagination
+Response Aggregation
+
+
+
+Resource
+	CreateInterface
+		+ create
+	ReadInterface
+		+ read
+	UpdateInterface
+		+ update
+	DeleteInterface
+		+ delete
+	ListInterface
+		+ list
+	PdoAdapter
+		+ create
+		+ read
+		+ update
+		+ delete
+		+ list
+		+ setPdoConnection

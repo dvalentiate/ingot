@@ -1,0 +1,30 @@
+{
+  "name": "ingotjs",
+  "version": "0.1.0",
+  "description": "REST API Wtih Access Control",
+  "keywords": [
+    "REST",
+    "API",
+    "ACL",
+    "Access Control"
+  ],
+  "license": "Do what you want. Anything goes. The web will keep track.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "gulp-util": "~2.2.14",
+    "gulp": "~3.5.2",
+    "karma-script-launcher": "~0.1.0",
+    "karma-chrome-launcher": "~0.1.2",
+    "karma-firefox-launcher": "~0.1.3",
+    "karma-html2js-preprocessor": "~0.1.0",
+    "karma-jasmine": "~0.1.5",
+    "karma-coffee-preprocessor": "~0.1.2",
+    "requirejs": "~2.1.10",
+    "karma-requirejs": "~0.2.1",
+    "karma-phantomjs-launcher": "~0.1.2",
+    "karma": "~0.10.9"
+  }
+}

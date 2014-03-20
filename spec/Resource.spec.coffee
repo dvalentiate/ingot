@@ -1,16 +1,17 @@
 test = ->
 	describe 'Resource', ->
-		
-		testResource = TestResource
+		r = new TestResource
 		
 		it 'provides a path syncronously ', ->
-			expect(testResource.getPath()).toBe 'test-resource'
+			expect(r.getPath()).toBe 'test-resource'
 		
 		it 'provides a property set syncronously', ->
-			propertySet = testResource.getPropertySet()
-			
-			expect(propertySet.propertyC).toBeDefined()
-			expect(propertySet.propertyC).toBe 'C'
+			expect(r.getPropertySet()).toEqual([
+				'propertyA'
+				'propertyB'
+				'propertyC'
+			])
+
 
 Resource = require '../Resource'
 q = require 'q'
@@ -50,7 +51,5 @@ class TestResource extends Resource
 			defer.resolve result
 		
 		return defer.promise
-
-exports.TestResource = TestResource
 
 test()

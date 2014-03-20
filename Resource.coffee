@@ -1,8 +1,10 @@
 _ = require 'lodash'
 q = require 'q'
 
+# abstract
 class Resource
 	account: null
+	constructor: ->
 	getPath: ->
 		@path
 	getPropertySet: ->
@@ -96,4 +98,4 @@ class Resource
 			throw "EMPTY OBJECT - SINGLE_VALUE: transform can't provide SINGLE_VALUE result for empty object"
 		throw "INVALID TYPE PARAM: transform was passed a unknown type param #{ type }"
 	
-exports.Resource = Resource
+module.exports = Resource

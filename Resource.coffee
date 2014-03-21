@@ -30,40 +30,43 @@ class Resource
 						navigation.path = part
 					else
 						navigation.path = navigation.path + '/' + part
-	getPropertyDefinition: (key) ->
-		if not @propertyMap[key]?
+	getPropertyDefinition: (property) ->
+		if not @propertyMap[property]?
 			return null
-		definition = @propertyMap[key]
+		definition = @propertyMap[property]
 		if typeof definition == 'string'
 			definition = {type: definition}
 		return definition
-	get: (key) ->
-		definition = @getPropertyDefinition key
-		
+	get: (id, property = null) ->
+		if property == null
+			return @read id
+		if _.isArray property
+			throw "get method doesn't support array of properties ... yet"
+		definition = @getPropertyDefinition property
 		if definition == null
-			throw "INVALID PROPERTY - UNKNOWN : #{ key } is not a property of #{ @name }"
+			throw "INVALID PROPERTY - UNKNOWN : #{ property } is not a property of #{ @name }"
 		if definition.type == 'reference'
 			idPropertyDefinition = @getPropertyDefinition definition.idProperty
 			if idPropertyDefinition == null
-				throw "INVALID REFERENCE - UNKNOWN PROPERTY : #{ idPropertyDefinition } referenced by #{ key } definition but doesn't exist"
+				throw "INVALID REFERENCE - UNKNOWN PROPERTY : #{ idPropertyDefinition } referenced by #{ property } definition but doesn't exist"
 			if idPropertyDefinition.type == 'reference'
-				throw "INVALID REFERENCE - TYPE : #{ idPropertyDefinition } is not a value or value list as required by #{ key } definition"
+				throw "INVALID REFERENCE - TYPE : #{ idPropertyDefinition } is not a value or value list as required by #{ property } definition"
 			referenced = @resourceFactory.getResource idPropertyDefinition.resource
 			if idPropertyDefinition.type == 'value'
-				id = @get idPropertyDefinition.idProperty
-				return referenced.read id
+				referencedId = @get id, idPropertyDefinition.idProperty
+				return referenced.read referencedId
 			if idPropertyDefinition.type == 'valueList'
-				idList = @get idPropertyDefinition.idProperty
+				referencedIdList = @get idPropertyDefinition.idProperty
 				if referenced.readList typeof 'undefined'
-					return referenced.readList idList
+					return referenced.readList referencedIdList
 				promiseList = []
-				for id in idList
-					promiseList.push(referenced.read id)
+				for referencedId in referencedIdList
+					promiseList.push referenced.read referencedId
 				return q.all promiseList
 		if definition.type == 'value'
-			return @read key, definition.idProperty, 'VALUE'
+			return @read id, property
 		if definition.type == 'valueList'
-			return @read key, definition.idProperty, 'VALUE'
+			return @read id, property
 	navigate: (path) ->
 		if _.isString path
 			path = path.split '/'

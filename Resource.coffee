@@ -101,15 +101,5 @@ class Resource
 			throw "INVALID PATH - UNREACHABLE : #{ path[1] } is unreachable because it is specified after a value property"
 		#  'value' or 'valueList'
 		return @get property
-	transform: (object, type = 'OBJECT') ->
-		if type == 'OBJECT' || type == null # default type
-			return object
-		else if type == 'ARRAY'
-			return _.values object
-		else if type == 'VALUE'
-			for value in object
-				return object
-			throw "EMPTY OBJECT - SINGLE_VALUE: transform can't provide SINGLE_VALUE result for empty object"
-		throw "INVALID TYPE PARAM: transform was passed a unknown type param #{ type }"
-	
+
 module.exports = Resource

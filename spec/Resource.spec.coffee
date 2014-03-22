@@ -1,6 +1,8 @@
 test = ->
 	describe 'Resource', ->
-		r = new TestResource
+		r = null
+		beforeEach ->
+			r = new TestResource
 		
 		it 'should provide a path syncronously ', ->
 			expect(r.getPath())
@@ -153,6 +155,26 @@ test = ->
 					},
 					{
 						propertyA: 6
+						propertyB: null
+						propertyC: []
+						propertyD: []
+						propertyE: []
+					}
+				]
+				done()
+		
+		describe 'when using get for a list of references, string value list id property', ->
+			value = null
+			
+			beforeEach (done) ->
+				r.get(1, 'propertyI').then (result) ->
+					value = result
+					done()
+			
+			it 'should provide a list of objects', (done) ->
+				expect(value).toEqual [
+					{
+						propertyA: 'X'
 						propertyB: null
 						propertyC: []
 						propertyD: []

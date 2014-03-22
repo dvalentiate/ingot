@@ -44,7 +44,7 @@ test = ->
 				expect(value).toEqual {
 					propertyA: 1
 					propertyB: 5
-					propertyC: 'A'
+					propertyC: 'X'
 					propertyD: [5, 6]
 					propertyE: ['X']
 				}
@@ -71,7 +71,7 @@ test = ->
 					done()
 			
 			it 'should provide a string value', (done) ->
-				expect(value).toEqual 'A'
+				expect(value).toEqual 'X'
 				done()
 		
 		describe 'when using get for a value list property', ->
@@ -98,7 +98,7 @@ test = ->
 				expect(value).toEqual ['X']
 				done()
 		
-		describe 'when using get for a reference with a value specifier', ->
+		describe 'when using get for a reference with a value id property', ->
 			value = null
 			
 			beforeEach (done) ->
@@ -106,7 +106,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide a string value list', (done) ->
+			it 'should provide an object', (done) ->
 				expect(value).toEqual {
 					propertyA: 5
 					propertyB: null
@@ -115,6 +115,52 @@ test = ->
 					propertyE: []
 				}
 				done()
+		
+		describe 'when using get for a reference with a string value id property', ->
+			value = null
+			
+			beforeEach (done) ->
+				r.get(1, 'propertyG').then (result) ->
+					value = result
+					done()
+			
+			it 'should provide an object', (done) ->
+				expect(value).toEqual {
+					propertyA: 'X'
+					propertyB: null
+					propertyC: []
+					propertyD: []
+					propertyE: []
+				}
+				done()
+		
+		describe 'when using get for a list of references, value list id property', ->
+			value = null
+			
+			beforeEach (done) ->
+				r.get(1, 'propertyH').then (result) ->
+					value = result
+					done()
+			
+			it 'should provide a list of objects', (done) ->
+				expect(value).toEqual [
+					{
+						propertyA: 5
+						propertyB: null
+						propertyC: []
+						propertyD: []
+						propertyE: []
+					},
+					{
+						propertyA: 6
+						propertyB: null
+						propertyC: []
+						propertyD: []
+						propertyE: []
+					}
+				]
+				done()
+
 
 Resource = require '../Resource'
 q = require 'q'
@@ -154,7 +200,7 @@ class TestResource extends Resource
 			'1': {
 				propertyA: 1
 				propertyB: 5
-				propertyC: 'A'
+				propertyC: 'X'
 				propertyD: [5, 6]
 				propertyE: ['X']
 			},

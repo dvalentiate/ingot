@@ -63,16 +63,18 @@ class Resource
 			if referencedResource == null
 				throw "INVALID REFERENCE - RESOURCE : #{ definition.resource } was not provided by the resource factory"
 			if referenceIdDefinition.type == 'value'
-				referencedId = @get id, definition.idProperty
-				return referencedResource.read referencedId
+				return @get(id, definition.idProperty)
+					.then (referencedId) ->
+						referencedResource.read referencedId
 			if referenceIdDefinition.type == 'valueList'
-				referencedIdList = @get definition.idProperty
-				if referencedResource.readList typeof 'undefined'
-					return referencedResource.readList referencedIdList
-				promiseList = []
-				for referencedId in referencedIdList
-					promiseList.push referencedResource.read referencedId
-				return q.all promiseList
+				return @get(id, definition.idProperty)
+					.then (referencedIdList) ->
+						if typeof referencedResource.readList == 'function'
+							return referencedResource.readList referencedIdList
+						promiseList = []
+						for referencedId in referencedIdList
+							promiseList.push referencedResource.read referencedId
+						q.all promiseList
 		if definition.type == 'value'
 			return @read id, property
 		if definition.type == 'valueList'

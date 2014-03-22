@@ -17,6 +17,7 @@ test = ->
 					'propertyF'
 					'propertyG'
 					'propertyH'
+					'propertyI'
 				]
 		
 		it 'should provide a property definition syncronously', ->
@@ -24,12 +25,12 @@ test = ->
 				.toEqual {type: 'value'}
 		
 		it 'should provide a property definition syncronously', ->
-			expect(r.getPropertyDefinition 'propertyC')
+			expect(r.getPropertyDefinition 'propertyD')
 				.toEqual {type: 'valueList'}
 		
 		it 'should provide a property definition syncronously', ->
-			expect(r.getPropertyDefinition 'propertyE')
-				.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyA'}
+			expect(r.getPropertyDefinition 'propertyF')
+				.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyB'}
 		
 		describe 'when using get with only an id specified', ->
 			value = null
@@ -42,9 +43,10 @@ test = ->
 			it 'should provide a complete object representing the resource', (done) ->
 				expect(value).toEqual {
 					propertyA: 1
-					propertyB: 'A'
-					propertyC: [5, 6, 7]
-					propertyD: ['X', 'Y', 'Z']
+					propertyB: 5
+					propertyC: 'A'
+					propertyD: [5, 6]
+					propertyE: ['X']
 				}
 				done()
 		
@@ -64,7 +66,7 @@ test = ->
 			value = null
 			
 			beforeEach (done) ->
-				r.get(1, 'propertyB').then (result) ->
+				r.get(1, 'propertyC').then (result) ->
 					value = result
 					done()
 			
@@ -76,24 +78,42 @@ test = ->
 			value = null
 			
 			beforeEach (done) ->
-				r.get(1, 'propertyC').then (result) ->
+				r.get(1, 'propertyD').then (result) ->
 					value = result
 					done()
 			
 			it 'should provide a value list', (done) ->
-				expect(value).toEqual [5, 6, 7]
+				expect(value).toEqual [5, 6]
 				done()
 		
 		describe 'when using get for a string value list property', ->
 			value = null
 			
 			beforeEach (done) ->
-				r.get(1, 'propertyD').then (result) ->
+				r.get(1, 'propertyE').then (result) ->
 					value = result
 					done()
 			
 			it 'should provide a string value list', (done) ->
-				expect(value).toEqual ['X', 'Y', 'Z']
+				expect(value).toEqual ['X']
+				done()
+		
+		describe 'when using get for a reference with a value specifier', ->
+			value = null
+			
+			beforeEach (done) ->
+				r.get(1, 'propertyF').then (result) ->
+					value = result
+					done()
+			
+			it 'should provide a string value list', (done) ->
+				expect(value).toEqual {
+					propertyA: 5
+					propertyB: null
+					propertyC: []
+					propertyD: []
+					propertyE: []
+				}
 				done()
 
 Resource = require '../Resource'
@@ -105,12 +125,13 @@ class TestResource extends Resource
 	propertyMap: {
 		'propertyA':    'value'
 		'propertyB':    'value'
-		'propertyC':    'valueList'
+		'propertyC':    'value'
 		'propertyD':    'valueList'
-		'propertyE':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyA'}
+		'propertyE':    'valueList'
 		'propertyF':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyB'}
 		'propertyG':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyC'}
 		'propertyH':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyD'}
+		'propertyI':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyE'}
 	}
 	access: {
 		create: [
@@ -132,9 +153,31 @@ class TestResource extends Resource
 		result = {
 			'1': {
 				propertyA: 1
-				propertyB: 'A'
-				propertyC: [5, 6, 7]
-				propertyD: ['X', 'Y', 'Z']
+				propertyB: 5
+				propertyC: 'A'
+				propertyD: [5, 6]
+				propertyE: ['X']
+			},
+			'5': {
+				propertyA: 5
+				propertyB: null
+				propertyC: []
+				propertyD: []
+				propertyE: []
+			},
+			'6': {
+				propertyA: 6
+				propertyB: null
+				propertyC: []
+				propertyD: []
+				propertyE: []
+			},
+			'X': {
+				propertyA: 'X'
+				propertyB: null
+				propertyC: []
+				propertyD: []
+				propertyE: []
 			}
 		}
 		

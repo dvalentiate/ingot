@@ -1,10 +1,11 @@
 class ResourceFactory
 	resourceMap: {}
 	addResource: (resource) ->
-		resource.setResourceFactory resource
-		@resourceMap[resource.class] = resource
+		@resourceMap[resource.constructor.name] = resource
 		@
 	getResource: (resourceClass) ->
+		if typeof @resourceMap[resourceClass] == 'undefined'
+			return null
 		@resourceMap[resourceClass]
 
-exports.ResourceFactory = ResourceFactory
+module.exports = ResourceFactory

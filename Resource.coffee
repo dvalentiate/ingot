@@ -4,6 +4,7 @@ q = require 'q'
 # abstract
 class Resource
 	account: null
+	resourceFactory: null
 	constructor: ->
 	getPath: ->
 		@path
@@ -11,8 +12,15 @@ class Resource
 		_.keys @propertyMap
 	setAccessContext: (account) ->
 		@account = account
+		@
 	setResourceFactory: (resourceFactory) ->
 		@resourceFactory = resourceFactory
+		@
+	getResourceFactory: ->
+		if @resourceFactory == null
+			@resourceFactory = new (require './ResourceFactory')
+			@resourceFactory.addResource @
+		@resourceFactory
 	can: (verb, id = null) ->
 		navigation = {
 			path: ''
@@ -46,27 +54,30 @@ class Resource
 		if definition == null
 			throw "INVALID PROPERTY - UNKNOWN : #{ property } is not a property of #{ @name }"
 		if definition.type == 'reference'
-			idPropertyDefinition = @getPropertyDefinition definition.idProperty
-			if idPropertyDefinition == null
-				throw "INVALID REFERENCE - UNKNOWN PROPERTY : #{ idPropertyDefinition } referenced by #{ property } definition but doesn't exist"
-			if idPropertyDefinition.type == 'reference'
-				throw "INVALID REFERENCE - TYPE : #{ idPropertyDefinition } is not a value or value list as required by #{ property } definition"
-			referenced = @resourceFactory.getResource idPropertyDefinition.resource
-			if idPropertyDefinition.type == 'value'
-				referencedId = @get id, idPropertyDefinition.idProperty
-				return referenced.read referencedId
-			if idPropertyDefinition.type == 'valueList'
-				referencedIdList = @get idPropertyDefinition.idProperty
-				if referenced.readList typeof 'undefined'
-					return referenced.readList referencedIdList
+			referenceIdDefinition = @getPropertyDefinition definition.idProperty
+			if referenceIdDefinition == null
+				throw "INVALID REFERENCE - UNKNOWN PROPERTY : #{ referenceIdDefinition } referenced by #{ property } definition but doesn't exist"
+			if referenceIdDefinition.type == 'reference'
+				throw "INVALID REFERENCE - TYPE : #{ referenceIdDefinition } is not a value or value list as required by #{ property } definition"
+			referencedResource = @getResourceFactory().getResource definition.resource
+			if referencedResource == null
+				throw "INVALID REFERENCE - RESOURCE : #{ definition.resource } was not provided by the resource factory"
+			if referenceIdDefinition.type == 'value'
+				referencedId = @get id, definition.idProperty
+				return referencedResource.read referencedId
+			if referenceIdDefinition.type == 'valueList'
+				referencedIdList = @get definition.idProperty
+				if referencedResource.readList typeof 'undefined'
+					return referencedResource.readList referencedIdList
 				promiseList = []
 				for referencedId in referencedIdList
-					promiseList.push referenced.read referencedId
+					promiseList.push referencedResource.read referencedId
 				return q.all promiseList
 		if definition.type == 'value'
 			return @read id, property
 		if definition.type == 'valueList'
 			return @read id, property
+		throw "INVALID PROPERTY - TYPE : #{ definition.type } is not a recognized property type"
 	navigate: (path) ->
 		if _.isString path
 			path = path.split '/'

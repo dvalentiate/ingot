@@ -42,7 +42,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide a complete object representing the resource', (done) ->
+			it 'should provide a promise to a complete object representing the resource', (done) ->
 				expect(value).toEqual {
 					propertyA: 1
 					propertyB: 5
@@ -60,7 +60,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide a value', (done) ->
+			it 'should provide a promise to a value', (done) ->
 				expect(value).toEqual 1
 				done()
 		
@@ -72,7 +72,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide a string value', (done) ->
+			it 'should provide a promise to a string value', (done) ->
 				expect(value).toEqual 'X'
 				done()
 		
@@ -84,7 +84,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide a value list', (done) ->
+			it 'should provide a promise to a value list', (done) ->
 				expect(value).toEqual [5, 6]
 				done()
 		
@@ -96,7 +96,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide a string value list', (done) ->
+			it 'should provide a promise to a string value list', (done) ->
 				expect(value).toEqual ['X']
 				done()
 		
@@ -108,7 +108,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide an object', (done) ->
+			it 'should provide a promise to an object', (done) ->
 				expect(value).toEqual {
 					propertyA: 5
 					propertyB: null
@@ -126,7 +126,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide an object', (done) ->
+			it 'should provide a promise to an object', (done) ->
 				expect(value).toEqual {
 					propertyA: 'X'
 					propertyB: null
@@ -144,7 +144,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide a list of objects', (done) ->
+			it 'should provide a promise to a list of objects', (done) ->
 				expect(value).toEqual [
 					{
 						propertyA: 5
@@ -171,7 +171,7 @@ test = ->
 					value = result
 					done()
 			
-			it 'should provide a list of objects', (done) ->
+			it 'should provide a promise to a list of objects', (done) ->
 				expect(value).toEqual [
 					{
 						propertyA: 'X'
@@ -182,6 +182,46 @@ test = ->
 					}
 				]
 				done()
+		
+		describe 'when navigate is called with empty path param', ->
+			describe 'and resource object param is a value', ->
+				it 'should provide a promise to a resource object with a id equalling the param value'
+			describe 'and resource object param is an object', ->
+				it 'should provide a promise to a resource object that was passed in'
+			describe 'and resource object param is a list of values', ->
+				it 'should provide a promise to a list of resource objects with ids equalling those in the resource object param'
+			describe 'and resource object param is a list of objects', ->
+				it 'should provide a promise to a list the resource objects that were passed in'
+		describe 'when navigate is called with non empty path param', ->
+			describe 'and end node names a value property', ->
+				describe 'and resource object param is a value', ->
+					it 'should provide a promise to a value corresponding to the property of a resource object specified by the resource object param'
+				describe 'and resource object param is an object', ->
+					it 'should provide a promise to a value corresponding to the property of the passed resource object'
+				describe 'and resource object param is a list of values', ->
+					it 'should provide a promise to a list of values corresponding to the path property of each of the resource objects specified by the object resource list'
+				describe 'and resource object param is a list of objects', ->
+					it 'should provide a promise to a list of values corresponding to the path property of each of passed resource objects'
+			describe 'and end node names a value list property', ->
+				describe 'and resource object param is a value', ->
+					it 'should provide a promise to the list values corresponding to the property of a resource object specified by the resource object param'
+				describe 'and resource object param is an object', ->
+					it 'should provide a promise to the list values corresponding to the property of the passed resource object'
+				describe 'and resource object param is a list of values', ->
+					it 'should provide a promise to a list of value lists corresponding to the path property of each of the resource objects specified by the object resource list'
+				describe 'and resource object param is a list of objects', ->
+					it 'should provide a promise to a list of value lists corresponding to the path property of each of passed resource objects'
+			describe 'and end node names a reference property', ->
+				describe 'and the reference is based on a value id property', ->
+					describe 'and resource object is a resource objects'
+						it 'should provide a promise to a resource object corresponding to the reference\'s id property'
+					describe 'and resource object is a list of resource objects'
+						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property'
+				describe 'and the reference is based on a value list id property', ->
+					describe 'and resource object is a resource objects'
+						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property'
+					describe 'and resource object is a list of resource objects'
+						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property'
 
 
 Resource = require '../Resource'

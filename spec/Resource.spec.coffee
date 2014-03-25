@@ -256,9 +256,50 @@ test = ->
 					}
 					done()
 			describe 'and resource object param is an object', ->
-				it 'should provide a promise to a resource object that was passed in'
+				value = null
+				beforeEach (done) ->
+					r.navigate('', {
+						propertyA: 1
+						propertyB: 5
+						propertyC: 'X'
+						propertyD: [5, 6]
+						propertyE: ['X']
+					}).then (result) ->
+						value = result
+						done()
+				it 'should provide a promise to a resource object that was passed in', (done) ->
+					expect(value).toEqual {
+						propertyA: 1
+						propertyB: 5
+						propertyC: 'X'
+						propertyD: [5, 6]
+						propertyE: ['X']
+					}
+					done()
 			describe 'and resource object param is a list of values', ->
-				it 'should provide a promise to a list of resource objects with ids equalling those in the resource object param'
+				value = null
+				beforeEach (done) ->
+					r.navigate('', [5, 6]).then (result) ->
+						value = result
+						done()
+				it 'should provide a promise to a list of resource objects with ids equalling those in the resource object param', (done) ->
+					expect(value).toEqual [
+						{
+							propertyA: 5
+							propertyB: null
+							propertyC: []
+							propertyD: []
+							propertyE: []
+						},
+						{
+							propertyA: 6
+							propertyB: null
+							propertyC: []
+							propertyD: []
+							propertyE: []
+						}
+					]
+					done()
 			describe 'and resource object param is a list of objects', ->
 				it 'should provide a promise to a list the resource objects that were passed in'
 		describe 'when navigate is called with non empty path param', ->
@@ -327,7 +368,7 @@ class TestResource extends Resource
 	}
 	read: (id, propertyList = null) ->
 		defer = q.defer()
-		if _.isObject id
+		if _.isObject(id) && !_.isArray(id)
 			id = @transform id, propertyList
 			defer.resolve id
 			return defer.promise
@@ -363,9 +404,13 @@ class TestResource extends Resource
 			}
 		}
 		
-		result = exampleData[id + '']
-		result = @transform result, propertyList
-		defer.resolve result
+		multiple = _.isArray id
+		if !multiple
+			id = [id]
+		result = []
+		for x in id
+			result.push @transform exampleData[x + ''], propertyList
+		defer.resolve if multiple then result else result[0]
 		return defer.promise
 
 test()

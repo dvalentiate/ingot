@@ -217,7 +217,7 @@ test = ->
 						propertyE: ['X']
 					};
 					beforeEach (done) ->
-						r.get(obj, 'propertyF').then (result) ->
+						r.get(obj, 'propertyH').then (result) ->
 							value = result
 							done()
 					it 'should provide a promise to a list of objects', (done) ->
@@ -281,6 +281,7 @@ test = ->
 
 
 Resource = require '../Resource'
+_ = require 'lodash'
 q = require 'q'
 
 class TestResource extends Resource
@@ -311,10 +312,14 @@ class TestResource extends Resource
 			{matchType: 'list', path: '{A}'}
 		]
 	}
-	read: (id, property = null) ->
+	read: (id, propertyList = null) ->
 		defer = q.defer()
+		if _.isObject id
+			id = @transform id, propertyList
+			defer.resolve id
+			return defer.promise
 		
-		result = {
+		exampleData = {
 			'1': {
 				propertyA: 1
 				propertyB: 5
@@ -345,11 +350,9 @@ class TestResource extends Resource
 			}
 		}
 		
-		if property == null
-			defer.resolve result[id + '']
-		else
-			defer.resolve result[id + ''][property]
-		
+		result = exampleData[id + '']
+		result = @transform result, propertyList
+		defer.resolve result
 		return defer.promise
 
 test()

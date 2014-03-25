@@ -3,11 +3,9 @@ test = ->
 		r = null
 		beforeEach ->
 			r = new TestResource
-		
 		it 'should provide a path syncronously ', ->
 			expect(r.getPath())
 				.toBe 'test-resource'
-		
 		it 'should provide a property set syncronously', ->
 			expect(r.getPropertySet())
 				.toEqual [
@@ -21,167 +19,225 @@ test = ->
 					'propertyH'
 					'propertyI'
 				]
-		
 		it 'should provide a property definition syncronously', ->
 			expect(r.getPropertyDefinition 'propertyA')
 				.toEqual {type: 'value'}
-		
 		it 'should provide a property definition syncronously', ->
 			expect(r.getPropertyDefinition 'propertyD')
 				.toEqual {type: 'valueList'}
-		
 		it 'should provide a property definition syncronously', ->
 			expect(r.getPropertyDefinition 'propertyF')
 				.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyB'}
-		
-		describe 'when using get with only an id specified', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1).then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to a complete object representing the resource', (done) ->
-				expect(value).toEqual {
-					propertyA: 1
-					propertyB: 5
-					propertyC: 'X'
-					propertyD: [5, 6]
-					propertyE: ['X']
-				}
-				done()
-		
-		describe 'when using get for a value property', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1, 'propertyA').then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to a value', (done) ->
-				expect(value).toEqual 1
-				done()
-		
-		describe 'when using get for a string value property', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1, 'propertyC').then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to a string value', (done) ->
-				expect(value).toEqual 'X'
-				done()
-		
-		describe 'when using get for a value list property', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1, 'propertyD').then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to a value list', (done) ->
-				expect(value).toEqual [5, 6]
-				done()
-		
-		describe 'when using get for a string value list property', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1, 'propertyE').then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to a string value list', (done) ->
-				expect(value).toEqual ['X']
-				done()
-		
-		describe 'when using get for a reference with a value id property', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1, 'propertyF').then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to an object', (done) ->
-				expect(value).toEqual {
-					propertyA: 5
-					propertyB: null
-					propertyC: []
-					propertyD: []
-					propertyE: []
-				}
-				done()
-		
-		describe 'when using get for a reference with a string value id property', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1, 'propertyG').then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to an object', (done) ->
-				expect(value).toEqual {
-					propertyA: 'X'
-					propertyB: null
-					propertyC: []
-					propertyD: []
-					propertyE: []
-				}
-				done()
-		
-		describe 'when using get for a list of references, value list id property', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1, 'propertyH').then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to a list of objects', (done) ->
-				expect(value).toEqual [
-					{
-						propertyA: 5
-						propertyB: null
-						propertyC: []
-						propertyD: []
-						propertyE: []
-					},
-					{
-						propertyA: 6
-						propertyB: null
-						propertyC: []
-						propertyD: []
-						propertyE: []
-					}
-				]
-				done()
-		
-		describe 'when using get for a list of references, string value list id property', ->
-			value = null
-			
-			beforeEach (done) ->
-				r.get(1, 'propertyI').then (result) ->
-					value = result
-					done()
-			
-			it 'should provide a promise to a list of objects', (done) ->
-				expect(value).toEqual [
-					{
-						propertyA: 'X'
-						propertyB: null
-						propertyC: []
-						propertyD: []
-						propertyE: []
-					}
-				]
-				done()
+		describe 'when using get', ->
+			describe 'and a value id param', ->
+				describe 'and no property specified', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a complete object representing the resource', (done) ->
+						expect(value).toEqual {
+							propertyA: 1
+							propertyB: 5
+							propertyC: 'X'
+							propertyD: [5, 6]
+							propertyE: ['X']
+						}
+						done()
+				describe 'and a value property', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1, 'propertyA').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a value', (done) ->
+						expect(value).toEqual 1
+						done()
+				describe 'and a string value property', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1, 'propertyC').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a string value', (done) ->
+						expect(value).toEqual 'X'
+						done()
+				describe 'and a value list property', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1, 'propertyD').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a value list', (done) ->
+						expect(value).toEqual [5, 6]
+						done()
+				describe 'and a string value list property', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1, 'propertyE').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a string value list', (done) ->
+						expect(value).toEqual ['X']
+						done()
+				describe 'and a reference with a value id property', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1, 'propertyF').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to an object', (done) ->
+						expect(value).toEqual {
+							propertyA: 5
+							propertyB: null
+							propertyC: []
+							propertyD: []
+							propertyE: []
+						}
+						done()
+				describe 'and a reference with a string value id property', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1, 'propertyG').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to an object', (done) ->
+						expect(value).toEqual {
+							propertyA: 'X'
+							propertyB: null
+							propertyC: []
+							propertyD: []
+							propertyE: []
+						}
+						done()
+				describe 'and a list of references, value list id property', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1, 'propertyH').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of objects', (done) ->
+						expect(value).toEqual [
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: []
+								propertyD: []
+								propertyE: []
+							},
+							{
+								propertyA: 6
+								propertyB: null
+								propertyC: []
+								propertyD: []
+								propertyE: []
+							}
+						]
+						done()
+				describe 'and a list of references, string value list id property', ->
+					value = null
+					beforeEach (done) ->
+						r.get(1, 'propertyI').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of objects', (done) ->
+						expect(value).toEqual [
+							{
+								propertyA: 'X'
+								propertyB: null
+								propertyC: []
+								propertyD: []
+								propertyE: []
+							}
+						]
+						done()
+			describe 'and a value id is an object', ->
+				describe 'and no property specified', ->
+					value = null
+					obj = {
+						propertyA: 1
+						propertyB: 5
+						propertyC: 'X'
+						propertyD: [5, 6]
+						propertyE: ['X']
+					};
+					beforeEach (done) ->
+						r.get(obj).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a complete object representing the resource', (done) ->
+						expect(value).toEqual obj
+						done()
+				describe 'and value property specified', ->
+					value = null
+					obj = {
+						propertyA: 1
+						propertyB: 5
+						propertyC: 'X'
+						propertyD: [5, 6]
+						propertyE: ['X']
+					};
+					beforeEach (done) ->
+						r.get(obj, 'propertyA').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a value', (done) ->
+						expect(value).toEqual 1
+						done()
+				describe 'and a reference with a value id property', ->
+					value = null
+					obj = {
+						propertyA: 1
+						propertyB: 5
+						propertyC: 'X'
+						propertyD: [5, 6]
+						propertyE: ['X']
+					};
+					beforeEach (done) ->
+						r.get(obj, 'propertyF').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to an object', (done) ->
+						expect(value).toEqual {
+							propertyA: 5
+							propertyB: null
+							propertyC: []
+							propertyD: []
+							propertyE: []
+						}
+						done()
+				describe 'and a list of references, value list id property', ->
+					value = null
+					obj = {
+						propertyA: 1
+						propertyB: 5
+						propertyC: 'X'
+						propertyD: [5, 6]
+						propertyE: ['X']
+					};
+					beforeEach (done) ->
+						r.get(obj, 'propertyF').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of objects', (done) ->
+						expect(value).toEqual [
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: []
+								propertyD: []
+								propertyE: []
+							},
+							{
+								propertyA: 6
+								propertyB: null
+								propertyC: []
+								propertyD: []
+								propertyE: []
+							}
+						]
+						done()
 		
 		describe 'when navigate is called with empty path param', ->
 			describe 'and resource object param is a value', ->
@@ -213,14 +269,14 @@ test = ->
 					it 'should provide a promise to a list of value lists corresponding to the path property of each of passed resource objects'
 			describe 'and end node names a reference property', ->
 				describe 'and the reference is based on a value id property', ->
-					describe 'and resource object is a resource objects'
+					describe 'and resource object is a resource objects', ->
 						it 'should provide a promise to a resource object corresponding to the reference\'s id property'
-					describe 'and resource object is a list of resource objects'
+					describe 'and resource object is a list of resource objects', ->
 						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property'
 				describe 'and the reference is based on a value list id property', ->
-					describe 'and resource object is a resource objects'
+					describe 'and resource object is a resource objects', ->
 						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property'
-					describe 'and resource object is a list of resource objects'
+					describe 'and resource object is a list of resource objects', ->
 						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property'
 
 

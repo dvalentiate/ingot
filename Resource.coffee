@@ -78,13 +78,14 @@ class Resource
 		if definition.type == 'valueList'
 			return @read id, propertyList
 		throw "INVALID PROPERTY - TYPE : #{ definition.type } is not a recognized propertyList type"
-	navigate: (path, resourceObject = null) ->
+	navigate: (path, resourceObject) ->
 		if _.isString path
 			path = path.split '/'
+			for x, i in path
+				path[i] = path[i].trim()
+		path = _.without path, ''
 		if path.length == 0
-			defer = q.defer()
-			defer.resolve @
-			return defer.promise
+			return @get resourceObject
 		property = path[0]
 		definition = @getPropertyDefinition path[0]
 		if definition == null

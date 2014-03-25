@@ -161,7 +161,7 @@ test = ->
 						propertyC: 'X'
 						propertyD: [5, 6]
 						propertyE: ['X']
-					};
+					}
 					beforeEach (done) ->
 						r.get(obj).then (result) ->
 							value = result
@@ -177,7 +177,7 @@ test = ->
 						propertyC: 'X'
 						propertyD: [5, 6]
 						propertyE: ['X']
-					};
+					}
 					beforeEach (done) ->
 						r.get(obj, 'propertyA').then (result) ->
 							value = result
@@ -193,7 +193,7 @@ test = ->
 						propertyC: 'X'
 						propertyD: [5, 6]
 						propertyE: ['X']
-					};
+					}
 					beforeEach (done) ->
 						r.get(obj, 'propertyF').then (result) ->
 							value = result
@@ -215,7 +215,7 @@ test = ->
 						propertyC: 'X'
 						propertyD: [5, 6]
 						propertyE: ['X']
-					};
+					}
 					beforeEach (done) ->
 						r.get(obj, 'propertyH').then (result) ->
 							value = result
@@ -241,7 +241,20 @@ test = ->
 		
 		describe 'when navigate is called with empty path param', ->
 			describe 'and resource object param is a value', ->
-				it 'should provide a promise to a resource object with a id equalling the param value'
+				value = null
+				beforeEach (done) ->
+					r.navigate('', 1).then (result) ->
+						value = result
+						done()
+				it 'should provide a promise to a resource object with a id equalling the param value', (done) ->
+					expect(value).toEqual {
+						propertyA: 1
+						propertyB: 5
+						propertyC: 'X'
+						propertyD: [5, 6]
+						propertyE: ['X']
+					}
+					done()
 			describe 'and resource object param is an object', ->
 				it 'should provide a promise to a resource object that was passed in'
 			describe 'and resource object param is a list of values', ->

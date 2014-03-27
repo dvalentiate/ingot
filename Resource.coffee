@@ -108,6 +108,6 @@ class Resource
 				data = _.pick data, propertyList
 			else
 				data = data[propertyList]
-		data
+		return data
 
 module.exports = Resource

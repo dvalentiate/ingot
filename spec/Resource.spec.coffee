@@ -296,6 +296,31 @@ test = ->
 					it 'should provide a promise to a list of objects', (done) ->
 						expect(value).toEqual [[1], []]
 						done()
+			describe 'and value is a list of objects', ->
+				describe 'and a list of references, value list id property', ->
+					value = null
+					beforeEach (done) ->
+						r.get([
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: ''
+								propertyD: [1]
+								propertyE: []
+							},
+							{
+								propertyA: 6
+								propertyB: null
+								propertyC: null
+								propertyD: []
+								propertyE: []
+							}
+						], 'propertyD').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of objects', (done) ->
+						expect(value).toEqual [[1], []]
+						done()
 		
 		describe 'when navigate is called with empty path param', ->
 			describe 'and resource object param is a value', ->
@@ -487,11 +512,33 @@ test = ->
 						r.navigate('propertyD', [5, 6]).then (result) ->
 							value = result
 							done()
-					it 'should provide a promise to a list of value lists corresponding to the path property of each of the resource objects specified by the object resource list', (done) ->
+					it 'should provide a promise to a consolodated list of values corresponding to the path property for each of the resource objects specified by the object resource list', (done) ->
 						expect(value).toEqual [1]
 						done()
 				describe 'and resource object param is a list of objects', ->
-					it 'should provide a promise to a list of value lists corresponding to the path property of each of passed resource objects'
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyD', [
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: ''
+								propertyD: [1]
+								propertyE: []
+							},
+							{
+								propertyA: 6
+								propertyB: null
+								propertyC: null
+								propertyD: []
+								propertyE: []
+							}
+						]).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a consolodated list of values corresponding to the path property for each of the provided resource objects', (done) ->
+						expect(value).toEqual [1]
+						done()
 			describe 'and end node names a reference property', ->
 				describe 'and the reference is based on a value id property', ->
 					describe 'and resource object is a resource objects', ->

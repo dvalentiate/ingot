@@ -91,8 +91,8 @@ test = ->
 						expect(value).toEqual {
 							propertyA: 5
 							propertyB: null
-							propertyC: []
-							propertyD: []
+							propertyC: ''
+							propertyD: [1]
 							propertyE: []
 						}
 						done()
@@ -106,7 +106,7 @@ test = ->
 						expect(value).toEqual {
 							propertyA: 'X'
 							propertyB: null
-							propertyC: []
+							propertyC: null
 							propertyD: []
 							propertyE: []
 						}
@@ -122,14 +122,14 @@ test = ->
 							{
 								propertyA: 5
 								propertyB: null
-								propertyC: []
-								propertyD: []
+								propertyC: ''
+								propertyD: [1]
 								propertyE: []
 							},
 							{
 								propertyA: 6
 								propertyB: null
-								propertyC: []
+								propertyC: null
 								propertyD: []
 								propertyE: []
 							}
@@ -146,7 +146,7 @@ test = ->
 							{
 								propertyA: 'X'
 								propertyB: null
-								propertyC: []
+								propertyC: null
 								propertyD: []
 								propertyE: []
 							}
@@ -202,8 +202,8 @@ test = ->
 						expect(value).toEqual {
 							propertyA: 5
 							propertyB: null
-							propertyC: []
-							propertyD: []
+							propertyC: ''
+							propertyD: [1]
 							propertyE: []
 						}
 						done()
@@ -225,18 +225,76 @@ test = ->
 							{
 								propertyA: 5
 								propertyB: null
-								propertyC: []
-								propertyD: []
+								propertyC: ''
+								propertyD: [1]
 								propertyE: []
 							},
 							{
 								propertyA: 6
 								propertyB: null
-								propertyC: []
+								propertyC: null
 								propertyD: []
 								propertyE: []
 							}
 						]
+						done()
+			describe 'and value id is a list', ->
+				describe 'and no property specified', ->
+					value = null
+					beforeEach (done) ->
+						r.get([5, 6]).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of complete objects representing the resource', (done) ->
+						expect(value).toEqual [
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: ''
+								propertyD: [1]
+								propertyE: []
+							},
+							{
+								propertyA: 6
+								propertyB: null
+								propertyC: null
+								propertyD: []
+								propertyE: []
+							}
+						]
+						done()
+				describe 'and no property specified', ->
+					value = null
+					beforeEach (done) ->
+						r.get([5, 5]).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of complete objects representing the resource', (done) ->
+						expect(value).toEqual [
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: ''
+								propertyD: [1]
+								propertyE: []
+							},
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: ''
+								propertyD: [1]
+								propertyE: []
+							}
+						]
+						done()
+				describe 'and a list of references, value list id property', ->
+					value = null
+					beforeEach (done) ->
+						r.get([5, 6], 'propertyD').then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of objects', (done) ->
+						expect(value).toEqual [[1], []]
 						done()
 		
 		describe 'when navigate is called with empty path param', ->
@@ -287,14 +345,14 @@ test = ->
 						{
 							propertyA: 5
 							propertyB: null
-							propertyC: []
-							propertyD: []
+							propertyC: ''
+							propertyD: [1]
 							propertyE: []
 						},
 						{
 							propertyA: 6
 							propertyB: null
-							propertyC: []
+							propertyC: null
 							propertyD: []
 							propertyE: []
 						}
@@ -307,14 +365,14 @@ test = ->
 						{
 							propertyA: 5
 							propertyB: null
-							propertyC: []
-							propertyD: []
+							propertyC: ''
+							propertyD: [1]
 							propertyE: []
 						},
 						{
 							propertyA: 6
 							propertyB: null
-							propertyC: []
+							propertyC: null
 							propertyD: []
 							propertyE: []
 						}
@@ -326,14 +384,14 @@ test = ->
 						{
 							propertyA: 5
 							propertyB: null
-							propertyC: []
-							propertyD: []
+							propertyC: ''
+							propertyD: [1]
 							propertyE: []
 						},
 						{
 							propertyA: 6
 							propertyB: null
-							propertyC: []
+							propertyC: null
 							propertyD: []
 							propertyE: []
 						}
@@ -342,7 +400,7 @@ test = ->
 		describe 'when navigate is called with non empty path param', ->
 			describe 'and end node names a value property', ->
 				describe 'and resource object param is a value', ->
-					value = null;
+					value = null
 					beforeEach (done) ->
 						r.navigate('propertyB', 1).then (result) ->
 							value = result
@@ -351,18 +409,87 @@ test = ->
 						expect(value).toEqual 5
 						done()
 				describe 'and resource object param is an object', ->
-					it 'should provide a promise to a value corresponding to the property of the passed resource object'
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyB', {
+							propertyA: 1
+							propertyB: 5
+							propertyC: 'X'
+							propertyD: [5, 6]
+							propertyE: ['X']
+						}).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a value corresponding to the property of the passed resource object', (done) ->
+						expect(value).toEqual 5
+						done()
 				describe 'and resource object param is a list of values', ->
-					it 'should provide a promise to a list of values corresponding to the path property of each of the resource objects specified by the object resource list'
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyA', [5, 6]).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of values corresponding to the path property of each of the resource objects specified by the object resource list', (done) ->
+						expect(value).toEqual [5, 6]
+						done()
 				describe 'and resource object param is a list of objects', ->
-					it 'should provide a promise to a list of values corresponding to the path property of each of passed resource objects'
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyA', [
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: ''
+								propertyD: [1]
+								propertyE: []
+							},
+							{
+								propertyA: 6
+								propertyB: null
+								propertyC: null
+								propertyD: []
+								propertyE: []
+							}
+						]).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of values corresponding to the path property of each of passed resource objects', (done) ->
+						expect(value).toEqual [5, 6]
+						done()
 			describe 'and end node names a value list property', ->
 				describe 'and resource object param is a value', ->
-					it 'should provide a promise to the list values corresponding to the property of a resource object specified by the resource object param'
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyD', 1).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to the list values corresponding to the property of a resource object specified by the resource object param', (done) ->
+						expect(value).toEqual [5, 6]
+						done()
 				describe 'and resource object param is an object', ->
-					it 'should provide a promise to the list values corresponding to the property of the passed resource object'
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyD', {
+							propertyA: 1
+							propertyB: 5
+							propertyC: 'X'
+							propertyD: [5, 6]
+							propertyE: ['X']
+						}).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to the list values corresponding to the property of the passed resource object', (done) ->
+						expect(value).toEqual [5, 6]
+						done()
 				describe 'and resource object param is a list of values', ->
-					it 'should provide a promise to a list of value lists corresponding to the path property of each of the resource objects specified by the object resource list'
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyD', [5, 6]).then (result) ->
+							value = result
+							done()
+					it 'should provide a promise to a list of value lists corresponding to the path property of each of the resource objects specified by the object resource list', (done) ->
+						expect(value).toEqual [1]
+						done()
 				describe 'and resource object param is a list of objects', ->
 					it 'should provide a promise to a list of value lists corresponding to the path property of each of passed resource objects'
 			describe 'and end node names a reference property', ->
@@ -427,21 +554,21 @@ class TestResource extends Resource
 			'5': {
 				propertyA: 5
 				propertyB: null
-				propertyC: []
-				propertyD: []
+				propertyC: ''
+				propertyD: [1]
 				propertyE: []
 			},
 			'6': {
 				propertyA: 6
 				propertyB: null
-				propertyC: []
+				propertyC: null
 				propertyD: []
 				propertyE: []
 			},
 			'X': {
 				propertyA: 'X'
 				propertyB: null
-				propertyC: []
+				propertyC: null
 				propertyD: []
 				propertyE: []
 			}

@@ -91,16 +91,20 @@ class Resource
 		if definition == null
 			throw "INVALID PATH - UNKNOWN : #{ path[0] } is an unknown property for #{ @name }"
 		if definition.type == 'reference'
-			@get(resourceObject, property).then (reference) ->
+			return @get(resourceObject, property).then (reference) ->
 				if !_.isArray reference
 					return reference.navigate path[1..]
 				promiseList = []
+				reference = _.unique reference
 				for resource in reference
 					promiseList.push resource.navigate path[1..]
 				return q.all promiseList
 		if path.length > 1
 			throw "INVALID PATH - UNREACHABLE : #{ path[1] } is unreachable because it is specified after a value property"
-		#  'value' or 'valueList'
+		if definition.type == 'valueList' && _.isArray resourceObject
+			return @get(resourceObject, property).then (list) ->
+				return _.flatten(list, true)
+		# 'value'
 		return @get resourceObject, property
 	transform: (data, propertyList) ->
 		if propertyList != null

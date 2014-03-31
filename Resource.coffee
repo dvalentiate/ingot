@@ -64,15 +64,13 @@ class Resource
 				throw "INVALID REFERENCE - RESOURCE : #{ definition.resource } was not provided by the resource factory"
 			if referenceIdDefinition.type == 'value'
 				return @get(id, definition.idProperty).then (referencedId) ->
-					referencedResource.read referencedId
+					return referencedResource.read referencedId
 			if referenceIdDefinition.type == 'valueList'
 				return @get(id, definition.idProperty).then (referencedIdList) ->
-					if typeof referencedResource.readList == 'function'
-						return referencedResource.readList referencedIdList
 					promiseList = []
 					for referencedId in referencedIdList
 						promiseList.push referencedResource.read referencedId
-					q.all promiseList
+					return q.all promiseList
 		if definition.type == 'value'
 			return @read id, propertyList
 		if definition.type == 'valueList'
@@ -91,19 +89,19 @@ class Resource
 		if definition == null
 			throw "INVALID PATH - UNKNOWN : #{ path[0] } is an unknown property for #{ @name }"
 		if definition.type == 'reference'
-			return @get(resourceObject, property).then (reference) ->
-				if !_.isArray reference
-					return reference.navigate path[1..]
-				promiseList = []
-				reference = _.unique reference
-				for resource in reference
-					promiseList.push resource.navigate path[1..]
-				return q.all promiseList
+			resource = @
+			return @get(resourceObject, property)
+				.then (reference) ->
+					referencedResource = resource.getResourceFactory().getResource definition.resource
+					if _.isArray reference
+						reference = _.unique reference
+						reference = _.without reference, null
+					return referencedResource.navigate path[1..], reference
 		if path.length > 1
 			throw "INVALID PATH - UNREACHABLE : #{ path[1] } is unreachable because it is specified after a value property"
 		if definition.type == 'valueList' && _.isArray resourceObject
 			return @get(resourceObject, property).then (list) ->
-				return _.flatten(list, true)
+				return _.flatten list, true
 		# 'value'
 		return @get resourceObject, property
 	transform: (data, propertyList) ->

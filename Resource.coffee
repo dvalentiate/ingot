@@ -7,20 +7,20 @@ class Resource
 	resourceFactory: null
 	constructor: ->
 	getPath: ->
-		@path
+		return @path
 	getPropertySet: ->
-		_.keys @propertyMap
+		return _.keys @propertyMap
 	setAccessContext: (account) ->
 		@account = account
-		@
+		return @
 	setResourceFactory: (resourceFactory) ->
 		@resourceFactory = resourceFactory
-		@
+		return @
 	getResourceFactory: ->
 		if @resourceFactory == null
 			@resourceFactory = new (require './ResourceFactory')
 			@resourceFactory.addResource @
-		@resourceFactory
+		return @resourceFactory
 	can: (verb, id = null) ->
 		navigation = {
 			path: ''
@@ -74,7 +74,6 @@ class Resource
 						return q.all promiseList
 					.then (referencedObjectList) ->
 						return _.flatten referencedObjectList, true
-		
 		if definition.type == 'value'
 			return @read id, propertyList
 		if definition.type == 'valueList'

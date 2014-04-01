@@ -66,11 +66,15 @@ class Resource
 				return @get(id, definition.idProperty).then (referencedId) ->
 					return referencedResource.read referencedId
 			if referenceIdDefinition.type == 'valueList'
-				return @get(id, definition.idProperty).then (referencedIdList) ->
-					promiseList = []
-					for referencedId in referencedIdList
-						promiseList.push referencedResource.read referencedId
-					return q.all promiseList
+				return @get(id, definition.idProperty)
+					.then (referencedIdList) ->
+						promiseList = []
+						for referencedId in referencedIdList
+							promiseList.push referencedResource.read referencedId
+						return q.all promiseList
+					.then (referencedObjectList) ->
+						return _.flatten referencedObjectList, true
+		
 		if definition.type == 'value'
 			return @read id, propertyList
 		if definition.type == 'valueList'

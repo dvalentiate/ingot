@@ -637,10 +637,67 @@ test = ->
 							done()
 				describe 'and the reference is based on a value list id property', ->
 					describe 'and resource object is a resource object', ->
-						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property'
+						value = null
+						beforeEach (done) ->
+							r.navigate('propertyH', {
+								propertyA: 1
+								propertyB: 5
+								propertyC: 'X'
+								propertyD: [5, 6]
+								propertyE: ['X']
+							}).then (result) ->
+								value = result
+								done()
+						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property', (done) ->
+							expect(value).toEqual [
+								{
+									propertyA: 5
+									propertyB: null
+									propertyC: ''
+									propertyD: [1]
+									propertyE: []
+								},
+								{
+									propertyA: 6
+									propertyB: 5
+									propertyC: null
+									propertyD: []
+									propertyE: []
+								}
+							]
+							done()
 					describe 'and resource object is a list of resource objects', ->
-						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property'
-
+						value = null
+						beforeEach (done) ->
+							r.navigate('propertyH', [
+								{
+									propertyA: 5
+									propertyB: null
+									propertyC: ''
+									propertyD: [1]
+									propertyE: []
+								},
+								{
+									propertyA: 6
+									propertyB: 5
+									propertyC: null
+									propertyD: []
+									propertyE: []
+								}
+							]).then (result) ->
+								value = result
+								done()
+						it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property', (done) ->
+							expect(value).toEqual [
+								{
+									propertyA: 1
+									propertyB: 5
+									propertyC: 'X'
+									propertyD: [5, 6]
+									propertyE: ['X']
+								}
+							]
+							done()
 
 Resource = require '../Resource'
 _ = require 'lodash'

@@ -1,7 +1,9 @@
 class ResourceFactory
 	resourceMap: {}
-	addResource: (resource) ->
-		@resourceMap[resource.constructor.name] = resource
+	addResource: (resource, name = null) ->
+		if name == null
+			name = resource.constructor.name
+		@resourceMap[name] = resource
 		return @
 	getResource: (resourceClass) ->
 		if typeof @resourceMap[resourceClass] == 'undefined'

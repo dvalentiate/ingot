@@ -79,6 +79,12 @@ class Resource
 		if definition.type == 'valueList'
 			return @read id, propertyList
 		throw "INVALID PROPERTY - TYPE : #{ definition.type } is not a recognized propertyList type"
+	post: (data = null, propertyList = null) ->
+	put: (id, data = null, propertyList = null) ->
+		
+		return @read id, propertyList
+	delete: (id) ->
+		
 	navigate: (path, resourceObject) ->
 		if _.isString path
 			path = path.split '/'

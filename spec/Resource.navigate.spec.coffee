@@ -4,6 +4,8 @@ describe 'Resource', ->
 	r = null
 	beforeEach ->
 		r = new TestResource
+		# TestResource is really TestResourceRead, but not for testing
+		r.getResourceFactory().addResource r, 'TestResource'
 	describe 'when navigate is called with empty path param', ->
 		describe 'and resource object param is a value', ->
 			value = null
@@ -222,9 +224,6 @@ describe 'Resource', ->
 					expect(value).toEqual [1]
 					done()
 		describe 'and end node names a reference property', ->
-			beforeEach ->
-				# TestResource is really TestResourceRead, but not for testing
-				r.getResourceFactory().addResource r, 'TestResource'
 			describe 'and the reference is based on a value id property', ->
 				describe 'and resource object is a resource object', ->
 					value = null

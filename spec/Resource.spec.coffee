@@ -4,10 +4,10 @@ describe 'Resource', ->
 	r = null
 	beforeEach ->
 		r = new TestResource
-	it 'should provide a path syncronously ', ->
+	it ' should return a path ', ->
 		expect(r.getPath())
 			.toBe 'test-resource'
-	it 'should provide a property set syncronously', ->
+	it ' should return a property set', ->
 		expect(r.getPropertySet())
 			.toEqual [
 				'propertyA'
@@ -20,12 +20,12 @@ describe 'Resource', ->
 				'propertyH'
 				'propertyI'
 			]
-	it 'should provide a property definition syncronously', ->
+	it ' should return a property definition', ->
 		expect(r.getPropertyDefinition 'propertyA')
 			.toEqual {type: 'value'}
-	it 'should provide a property definition syncronously', ->
+	it ' should return a property definition', ->
 		expect(r.getPropertyDefinition 'propertyD')
 			.toEqual {type: 'valueList'}
-	it 'should provide a property definition syncronously', ->
+	it ' should return a property definition', ->
 		expect(r.getPropertyDefinition 'propertyF')
 			.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyB'}

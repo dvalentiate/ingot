@@ -1,19 +1,19 @@
 TestResource = require './sample/TestResourceRead'
 
-describe 'Resource', ->
+describe 'Resource.navigate', ->
 	r = null
 	beforeEach ->
 		r = new TestResource
 		# TestResource is really TestResourceRead, but not for testing
 		r.getResourceFactory().addResource r, 'TestResource'
-	describe 'when navigate is called with empty path param', ->
-		describe 'and resource object param is a value', ->
+	describe ' an empty path', ->
+		describe ' a value resourceObj', ->
 			value = null
 			beforeEach (done) ->
 				r.navigate('', 1).then (result) ->
 					value = result
 					done()
-			it 'should provide a promise to a resource object with a id equalling the param value', (done) ->
+			it ' should promise an object with an id equalling resourceObj', (done) ->
 				expect(value).toEqual {
 					propertyA: 1
 					propertyB: 5
@@ -22,7 +22,7 @@ describe 'Resource', ->
 					propertyE: ['X']
 				}
 				done()
-		describe 'and resource object param is an object', ->
+		describe ' an object resourceObj', ->
 			value = null
 			beforeEach (done) ->
 				r.navigate('', {
@@ -34,7 +34,7 @@ describe 'Resource', ->
 				}).then (result) ->
 					value = result
 					done()
-			it 'should provide a promise to a resource object that was passed in', (done) ->
+			it ' should promise an object equalling resourceObj', (done) ->
 				expect(value).toEqual {
 					propertyA: 1
 					propertyB: 5
@@ -43,13 +43,13 @@ describe 'Resource', ->
 					propertyE: ['X']
 				}
 				done()
-		describe 'and resource object param is a list of values', ->
+		describe ' a list of values resourceObj', ->
 			value = null
 			beforeEach (done) ->
 				r.navigate('', [5, 6]).then (result) ->
 					value = result
 					done()
-			it 'should provide a promise to a list of resource objects with ids equalling those in the resource object param', (done) ->
+			it ' should promise a list of objects with ids equalling those in resourceObj', (done) ->
 				expect(value).toEqual [
 					{
 						propertyA: 5
@@ -67,7 +67,7 @@ describe 'Resource', ->
 					}
 				]
 				done()
-		describe 'and resource object param is a list of objects', ->
+		describe ' resourceObj param is a list of objects', ->
 			value = null
 			beforeEach (done) ->
 				r.navigate('', [
@@ -88,7 +88,7 @@ describe 'Resource', ->
 				]).then (result) ->
 					value = result
 					done()
-			it 'should provide a promise to a list the resource objects that were passed in', (done) ->
+			it ' should promise a list the resource objects that were passed in', (done) ->
 				expect(value).toEqual [
 					{
 						propertyA: 5
@@ -106,18 +106,18 @@ describe 'Resource', ->
 					}
 				]
 				done()
-	describe 'when navigate is called with non empty path param', ->
-		describe 'and end node names a value property', ->
-			describe 'and resource object param is a value', ->
+	describe ' path', ->
+		describe ' a value', ->
+			describe ' a value resourceObj', ->
 				value = null
 				beforeEach (done) ->
 					r.navigate('propertyB', 1).then (result) ->
 						value = result
 						done()
-				it 'should provide a promise to a value corresponding to the property of a resource object specified by the resource object param', (done) ->
+				it ' should promise a value equalliing the property in resourceObj', (done) ->
 					expect(value).toEqual 5
 					done()
-			describe 'and resource object param is an object', ->
+			describe ' an object resourceObj', ->
 				value = null
 				beforeEach (done) ->
 					r.navigate('propertyB', {
@@ -129,19 +129,19 @@ describe 'Resource', ->
 					}).then (result) ->
 						value = result
 						done()
-				it 'should provide a promise to a value corresponding to the property of the passed resource object', (done) ->
+				it ' should promise a value equalling the property of resourceObject', (done) ->
 					expect(value).toEqual 5
 					done()
-			describe 'and resource object param is a list of values', ->
+			describe ' a list of values resourceObj', ->
 				value = null
 				beforeEach (done) ->
 					r.navigate('propertyA', [5, 6]).then (result) ->
 						value = result
 						done()
-				it 'should provide a promise to a list of values corresponding to the path property of each of the resource objects specified by the object resource list', (done) ->
+				it ' should promise a list of values equalling the property of each in resourceObj', (done) ->
 					expect(value).toEqual [5, 6]
 					done()
-			describe 'and resource object param is a list of objects', ->
+			describe ' resourceObj param is a list of objects', ->
 				value = null
 				beforeEach (done) ->
 					r.navigate('propertyA', [
@@ -162,20 +162,20 @@ describe 'Resource', ->
 					]).then (result) ->
 						value = result
 						done()
-				it 'should provide a promise to a list of values corresponding to the path property of each of passed resource objects', (done) ->
+				it ' should promise a list of values equalling the property of each in resourceObjects', (done) ->
 					expect(value).toEqual [5, 6]
 					done()
-		describe 'and end node names a value list property', ->
-			describe 'and resource object param is a value', ->
+		describe ' a value list', ->
+			describe ' a value resourceObj', ->
 				value = null
 				beforeEach (done) ->
 					r.navigate('propertyD', 1).then (result) ->
 						value = result
 						done()
-				it 'should provide a promise to the list values corresponding to the property of a resource object specified by the resource object param', (done) ->
+				it ' should promise the list values equalling the property in resourceObj', (done) ->
 					expect(value).toEqual [5, 6]
 					done()
-			describe 'and resource object param is an object', ->
+			describe ' an object resourceObj', ->
 				value = null
 				beforeEach (done) ->
 					r.navigate('propertyD', {
@@ -187,19 +187,19 @@ describe 'Resource', ->
 					}).then (result) ->
 						value = result
 						done()
-				it 'should provide a promise to the list values corresponding to the property of the passed resource object', (done) ->
+				it ' should promise the list values equalling the property in resourceObject', (done) ->
 					expect(value).toEqual [5, 6]
 					done()
-			describe 'and resource object param is a list of values', ->
+			describe ' a list of values resourceObj', ->
 				value = null
 				beforeEach (done) ->
 					r.navigate('propertyD', [5, 6]).then (result) ->
 						value = result
 						done()
-				it 'should provide a promise to a consolodated list of values corresponding to the path property for each of the resource objects specified by the object resource list', (done) ->
+				it ' should promise a consolodated list of values equalling the property in resourceObj', (done) ->
 					expect(value).toEqual [1]
 					done()
-			describe 'and resource object param is a list of objects', ->
+			describe ' resourceObj param is a list of objects', ->
 				value = null
 				beforeEach (done) ->
 					r.navigate('propertyD', [
@@ -220,12 +220,12 @@ describe 'Resource', ->
 					]).then (result) ->
 						value = result
 						done()
-				it 'should provide a promise to a consolodated list of values corresponding to the path property for each of the provided resource objects', (done) ->
+				it ' should promise a consolodated list of values equalling the property for each in resourceObj', (done) ->
 					expect(value).toEqual [1]
 					done()
-		describe 'and end node names a reference property', ->
-			describe 'and the reference is based on a value id property', ->
-				describe 'and resource object is a resource object', ->
+		describe ' a reference', ->
+			describe ' a value id', ->
+				describe ' object resourceObj', ->
 					value = null
 					beforeEach (done) ->
 						r.navigate('propertyF', {
@@ -237,7 +237,7 @@ describe 'Resource', ->
 						}).then (result) ->
 							value = result
 							done()
-					it 'should provide a promise to a resource object corresponding to the reference\'s id property', (done) ->
+					it ' should promise an object equalling the reference\'s id', (done) ->
 						expect(value).toEqual {
 							propertyA: 5
 							propertyB: null
@@ -246,7 +246,7 @@ describe 'Resource', ->
 							propertyE: []
 						}
 						done()
-				describe 'and resource object is a list of a single resource object and reference points to null', ->
+				describe ' object with null reference resourceObj', ->
 					value = null
 					obj = [
 						{
@@ -261,10 +261,10 @@ describe 'Resource', ->
 						r.navigate('propertyF', obj).then (result) ->
 							value = result
 							done()
-					it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property', (done) ->
+					it ' should promise an empty list of objects', (done) ->
 						expect(value).toEqual []
 						done()
-				describe 'and resource object is a list of resource objects', ->
+				describe ' list of objects resourceObj', ->
 					value = null
 					obj = [
 						{
@@ -286,7 +286,7 @@ describe 'Resource', ->
 						r.navigate('propertyF', obj).then (result) ->
 							value = result
 							done()
-					it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property', (done) ->
+					it ' should promise a list of objects matching the reference\'s id', (done) ->
 						expect(value).toEqual [{
 							propertyA: 5
 							propertyB: null
@@ -295,8 +295,8 @@ describe 'Resource', ->
 							propertyE: []
 						}]
 						done()
-			describe 'and the reference is based on a value list id property', ->
-				describe 'and resource object is a resource object', ->
+			describe ' value list id reference', ->
+				describe ' object resourceObj', ->
 					value = null
 					beforeEach (done) ->
 						r.navigate('propertyH', {
@@ -308,7 +308,7 @@ describe 'Resource', ->
 						}).then (result) ->
 							value = result
 							done()
-					it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property', (done) ->
+					it ' should promise a list of objects matching the reference\'s id', (done) ->
 						expect(value).toEqual [
 							{
 								propertyA: 5
@@ -326,7 +326,7 @@ describe 'Resource', ->
 							}
 						]
 						done()
-				describe 'and resource object is a list of resource objects', ->
+				describe ' list of objects resourceObj', ->
 					value = null
 					beforeEach (done) ->
 						r.navigate('propertyH', [
@@ -347,7 +347,7 @@ describe 'Resource', ->
 						]).then (result) ->
 							value = result
 							done()
-					it 'should provide a promise to a list of resource objects corresponding to the reference\'s id property', (done) ->
+					it ' should promise a list of objects matching the reference\'s id', (done) ->
 						expect(value).toEqual [
 							{
 								propertyA: 1

@@ -85,21 +85,21 @@ class Resource
 		return @read id, propertyList
 	delete: (id) ->
 		
-	navigate: (path, resourceObject) ->
+	navigate: (path, resourceObj) ->
 		if _.isString path
 			path = path.split '/'
 			for x, i in path
 				path[i] = path[i].trim()
 		path = _.without path, ''
 		if path.length == 0
-			return @get resourceObject
+			return @get resourceObj
 		property = path[0]
 		definition = @getPropertyDefinition path[0]
 		if definition == null
 			throw "INVALID PATH - UNKNOWN : #{ path[0] } is an unknown property for #{ @name }"
 		if definition.type == 'reference'
 			resource = @
-			return @get(resourceObject, property)
+			return @get(resourceObj, property)
 				.then (reference) ->
 					referencedResource = resource.getResourceFactory().getResource definition.resource
 					if _.isArray reference
@@ -108,11 +108,11 @@ class Resource
 					return referencedResource.navigate path[1..], reference
 		if path.length > 1
 			throw "INVALID PATH - UNREACHABLE : #{ path[1] } is unreachable because it is specified after a value property"
-		if definition.type == 'valueList' && _.isArray resourceObject
-			return @get(resourceObject, property).then (list) ->
+		if definition.type == 'valueList' && _.isArray resourceObj
+			return @get(resourceObj, property).then (list) ->
 				return _.flatten list, true
 		# 'value'
-		return @get resourceObject, property
+		return @get resourceObj, property
 	transform: (data, propertyList) ->
 		if propertyList != null
 			if _.isArray propertyList

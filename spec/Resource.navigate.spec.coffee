@@ -358,3 +358,49 @@ describe 'Resource.navigate', ->
 							}
 						]
 						done()
+		describe ' multistep', ->
+			describe ' to property', ->
+				value = null
+				beforeEach (done) ->
+					r.navigate('propertyH/propertyA', 1).then (result) ->
+						value = result
+						done()
+				it ' should promise a list of values', (done) ->
+					expect(value).toEqual [5, 6]
+					done()
+			describe ' to reference', ->
+				describe ' to value', ->
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyH/propertyB', 1).then (result) ->
+							value = result
+							done()
+					it ' should promise a list of values', (done) ->
+						expect(value).toEqual [null, 5]
+						done()
+				describe ' to list of values', ->
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyH/propertyD', 1).then (result) ->
+							value = result
+							done()
+					it ' should promise a list of values', (done) ->
+						expect(value).toEqual [1]
+						done()
+				describe ' to 2nd reference', ->
+					value = null
+					beforeEach (done) ->
+						r.navigate('propertyH/propertyF', 1).then (result) ->
+							value = result
+							done()
+					it ' should promise a list of values', (done) ->
+						expect(value).toEqual [
+							{
+								propertyA: 5
+								propertyB: null
+								propertyC: ''
+								propertyD: [1]
+								propertyE: []
+							}
+						]
+						done()

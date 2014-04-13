@@ -1,4 +1,6 @@
 TestResource = require './TestResource'
+TestData = require './TestData.json'
+
 _ = require 'lodash'
 q = require 'q'
 
@@ -9,37 +11,6 @@ class TestResourceRead extends TestResource
 		if !multiple
 			id = [id]
 		
-		exampleData = {
-			'1': {
-				propertyA: 1
-				propertyB: 5
-				propertyC: 'X'
-				propertyD: [5, 6]
-				propertyE: ['X']
-			},
-			'5': {
-				propertyA: 5
-				propertyB: null
-				propertyC: ''
-				propertyD: [1]
-				propertyE: []
-			},
-			'6': {
-				propertyA: 6
-				propertyB: 5
-				propertyC: null
-				propertyD: []
-				propertyE: []
-			},
-			'X': {
-				propertyA: 'X'
-				propertyB: null
-				propertyC: null
-				propertyD: []
-				propertyE: []
-			}
-		}
-		
 		result = []
 		for x in id
 			if x == null
@@ -49,7 +20,7 @@ class TestResourceRead extends TestResource
 			if _.isObject x
 				content = x
 			else
-				content = exampleData[x + '']
+				content = TestData[x + '']
 			
 			if propertyList != null
 				if _.isArray propertyList

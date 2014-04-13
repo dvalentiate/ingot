@@ -3,9 +3,9 @@ _ = require 'lodash'
 q = require 'q'
 
 class TestResourceCreate extends TestResourceRead
-	create: (data = null, propertyList = null) ->
+	delete: (id) ->
 		defer = q.defer()
-		defer.resolve(data)
+		defer.resolve()
 		return defer.promise
 
 module.exports = TestResourceCreate

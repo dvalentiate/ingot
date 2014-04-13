@@ -6,6 +6,41 @@ describe 'Resource get', ->
 		r = new TestResource
 		# TestResource is really TestResourceRead, but not for testing
 		r.getResourceFactory().addResource r, 'TestResource'
+	describe ' a value id for a non existent id', ->
+		value = null
+		beforeEach (done) ->
+			r.get(2).then (result) ->
+				value = result
+				done()
+		it ' should promise null', (done) ->
+			expect(value).toEqual null
+			done()
+	describe ' a list of value ids for a non existent ids', ->
+		value = null
+		beforeEach (done) ->
+			r.get([2, 3]).then (result) ->
+				value = result
+				done()
+		it ' should promise an empty list', (done) ->
+			expect(value).toEqual []
+			done()
+	describe ' a list of value ids some are for non existent ids', ->
+		value = null
+		beforeEach (done) ->
+			r.get([2, 5]).then (result) ->
+				value = result
+				done()
+		it ' should promise a list with only the valid objects', (done) ->
+			expect(value).toEqual [
+				{
+					propertyA: 5
+					propertyB: null
+					propertyC: ''
+					propertyD: [1]
+					propertyE: []
+				}
+			]
+			done()
 	describe ' a value id', ->
 		describe ' no propertyList specified', ->
 			value = null

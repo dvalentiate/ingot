@@ -22,6 +22,9 @@ class TestResourceRead extends TestResource
 			else
 				content = TestData[x + '']
 			
+			if typeof content == 'undefined'
+				continue
+			
 			if propertyList != null
 				if _.isArray propertyList
 					content = @transform content, propertyList

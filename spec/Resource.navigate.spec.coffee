@@ -1,4 +1,5 @@
 TestResource = require './sample/TestResourceRead'
+testData = require './sample/TestData.json'
 
 describe 'Resource.navigate', ->
 	r = null
@@ -6,6 +7,7 @@ describe 'Resource.navigate', ->
 		r = new TestResource
 		# TestResource is really TestResourceRead, but not for testing
 		r.getResourceFactory().addResource r, 'TestResource'
+		r.setData testData
 	describe ' an empty path', ->
 		describe ' a value resourceObj', ->
 			value = null

@@ -1,5 +1,4 @@
 TestResource = require './TestResource'
-testData = require './TestData.json'
 
 _ = require 'lodash'
 q = require 'q'
@@ -20,7 +19,7 @@ class TestResourceRead extends TestResource
 			if _.isObject x
 				content = x
 			else
-				content = testData[x + '']
+				content = @data[x + '']
 			
 			if typeof content == 'undefined'
 				continue
@@ -34,5 +33,9 @@ class TestResourceRead extends TestResource
 			result.push content
 		defer.resolve if multiple then result else result[0]
 		return defer.promise
+	data: null
+	setData: (data) ->
+		@data = data
+		return @
 
 module.exports = TestResourceRead

@@ -1,4 +1,5 @@
 TestResource = require './sample/TestResourceRead'
+testData = require './sample/TestData.json'
 
 describe 'Resource get', ->
 	r = null
@@ -6,6 +7,7 @@ describe 'Resource get', ->
 		r = new TestResource
 		# TestResource is really TestResourceRead, but not for testing
 		r.getResourceFactory().addResource r, 'TestResource'
+		r.setData testData
 	describe ' a value id for a non existent id', ->
 		value = null
 		beforeEach (done) ->

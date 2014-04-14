@@ -1,5 +1,4 @@
-TestResource = require './TestResourceRead'
-testData = require './TestData.json'
+TestResourceRead = require './TestResourceRead'
 
 _ = require 'lodash'
 q = require 'q'
@@ -7,7 +6,7 @@ q = require 'q'
 class TestResourceDelete extends TestResourceRead
 	delete: (id) ->
 		defer = q.defer()
-		result = {}
+		result = []
 		
 		multiple = _.isArray id
 		if !multiple
@@ -15,14 +14,11 @@ class TestResourceDelete extends TestResourceRead
 		
 		for x in id
 			index = x + ''
-			valid = typeof testData[index] != 'undefined'
+			valid = typeof @data[index] != 'undefined'
 			if valid
-				delete testData[index]
-			if !multiple
-				defer.resolve valid
-				return
-			result[index] = valid
-		defer.resolve result
+				delete @data[index]
+				result.push x
+		defer.resolve if multiple then result else if result.length > 0 then result[0] else null
 		
 		return defer.promise
 

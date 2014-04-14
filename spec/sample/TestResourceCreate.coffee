@@ -1,4 +1,5 @@
-TestResource = require './TestResourceRead'
+TestResourceRead = require './TestResourceRead'
+
 _ = require 'lodash'
 q = require 'q'
 

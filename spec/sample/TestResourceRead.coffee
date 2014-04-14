@@ -1,5 +1,5 @@
 TestResource = require './TestResource'
-TestData = require './TestData.json'
+testData = require './TestData.json'
 
 _ = require 'lodash'
 q = require 'q'
@@ -20,7 +20,7 @@ class TestResourceRead extends TestResource
 			if _.isObject x
 				content = x
 			else
-				content = TestData[x + '']
+				content = testData[x + '']
 			
 			if typeof content == 'undefined'
 				continue

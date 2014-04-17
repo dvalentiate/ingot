@@ -17,16 +17,39 @@ describe 'Resource delete', ->
 				r.delete(1).then (result) ->
 					value = result
 					done()
-			it ' should promise true', (done) ->
+			it ' should promise the deleted id', (done) ->
 				expect(value).toEqual 1
 				done()
+			it ' should mean that the resource is no longer available', (done) ->
+				r.get(1).then (result) ->
+					expect(result).toEqual null
+					done()
+			it ' should mean that the other resources are not affected', (done) ->
+				r.get([5, 6]).then (result) ->
+					expect(result).toEqual [
+						{
+							propertyA: 5
+							propertyB: null
+							propertyC: ''
+							propertyD: [1]
+							propertyE: []
+						},
+						{
+							propertyA: 6
+							propertyB: 5
+							propertyC: null
+							propertyD: []
+							propertyE: []
+						}
+					]
+					done()
 		describe ' for an invalid id', ->
 			value = null
 			beforeEach (done) ->
 				r.delete(2).then (result) ->
 					value = result
 					done()
-			it ' should promise false', (done) ->
+			it ' should promise null', (done) ->
 				expect(value).toEqual null
 				done()
 	describe ' a list of values', ->

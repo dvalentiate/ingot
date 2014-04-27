@@ -19,7 +19,7 @@ describe 'Resource update', ->
 				}).then (result) ->
 					value = result
 					done()
-			it ' should promise the deleted id', (done) ->
+			it ' should promise the updated id', (done) ->
 				expect(value).toEqual {
 					propertyA: 1
 					propertyB: 6
@@ -28,7 +28,7 @@ describe 'Resource update', ->
 					propertyE: ['X']
 				}
 				done()
-			xit ' should mean that the resource is updated', (done) ->
+			it ' should mean that the resource is updated', (done) ->
 				r.get(1).then (result) ->
 					expect(result).toEqual {
 						propertyA: 1
@@ -38,7 +38,7 @@ describe 'Resource update', ->
 						propertyE: ['X']
 					}
 					done()
-			xit ' should mean that the other resources are not affected', (done) ->
+			it ' should mean that the other resources are not affected', (done) ->
 				r.get([5, 6]).then (result) ->
 					expect(result).toEqual [
 						{
@@ -65,7 +65,7 @@ describe 'Resource update', ->
 				}).then (result) ->
 					value = result
 					done()
-			xit ' should promise null', (done) ->
+			it ' should promise null', (done) ->
 				expect(value).toEqual null
 				done()
 	describe ' a list of values', ->

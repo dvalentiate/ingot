@@ -1,10 +1,10 @@
-TestResourceRead = require './TestResourceRead'
+TestResourceCrudRead = require './TestResourceCrudRead'
 
 _ = require 'lodash'
 q = require 'q'
 
-class TestResourceDelete extends TestResourceRead
-	delete: (id) ->
+class TestResourceCrudDelete extends TestResourceCrudRead
+	crudDelete: (id) ->
 		defer = q.defer()
 		result = []
 		
@@ -22,4 +22,4 @@ class TestResourceDelete extends TestResourceRead
 		
 		return defer.promise
 
-module.exports = TestResourceDelete
+module.exports = TestResourceCrudDelete

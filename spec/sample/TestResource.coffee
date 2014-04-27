@@ -28,5 +28,9 @@ class TestResource extends Resource
 			{matchType: 'boolean', path: '{true}'}
 		]
 	}
+	getIdForObject: (object) ->
+		if object.propertyA == 'undefined'
+			return null
+		return object.propertyA
 
 module.exports = TestResource

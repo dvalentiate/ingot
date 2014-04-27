@@ -3,8 +3,8 @@ TestResource = require './TestResource'
 _ = require 'lodash'
 q = require 'q'
 
-class TestResourceRead extends TestResource
-	read: (id, propertyList = null) ->
+class TestResourceCrudRead extends TestResource
+	crudRead: (id, propertyList = null) ->
 		defer = q.defer()
 		multiple = _.isArray id
 		if !multiple
@@ -38,4 +38,4 @@ class TestResourceRead extends TestResource
 		@data = data
 		return @
 
-module.exports = TestResourceRead
+module.exports = TestResourceCrudRead

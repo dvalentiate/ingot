@@ -1,4 +1,4 @@
-TestResource = require './sample/TestResourceRead'
+TestResource = require './sample/TestResourceCrudRead'
 testData = require './sample/TestData.json'
 
 describe 'Resource get', ->

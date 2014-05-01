@@ -73,33 +73,5 @@ class CrudResource extends Resource
 		return defer.promise
 	delete: (id) ->
 		return @crudDelete id
-	navigate: (path, resourceObj) ->
-		if _.isString path
-			path = path.split '/'
-			for x, i in path
-				path[i] = path[i].trim()
-		path = _.without path, ''
-		if path.length == 0
-			return @get resourceObj
-		property = path[0]
-		definition = @getPropertyDefinition path[0]
-		if definition == null
-			throw "INVALID PATH - UNKNOWN : #{ path[0] } is an unknown property for #{ @name }"
-		if definition.type == 'reference'
-			resource = @
-			return @get(resourceObj, property)
-				.then (reference) ->
-					referencedResource = resource.getResourceFactory().getResource definition.resource
-					if _.isArray reference
-						reference = _.unique reference
-						reference = _.without reference, null
-					return referencedResource.navigate path[1..], reference
-		if path.length > 1
-			throw "INVALID PATH - UNREACHABLE : #{ path[1] } is unreachable because it is specified after a value property"
-		if definition.type == 'valueList' && _.isArray resourceObj
-			return @get(resourceObj, property).then (list) ->
-				return _.flatten list, true
-		# 'value'
-		return @get resourceObj, property
 
 module.exports = CrudResource

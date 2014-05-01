@@ -3,7 +3,7 @@ _ = require 'lodash'
 q = require 'q'
 
 class TestCrudResourceCreate extends TestCrudResourceRead
-	create: (data = null, propertyList = null) ->
+	crudCreate: (data = null, propertyList = null) ->
 		defer = q.defer()
 		defer.resolve(data)
 		return defer.promise

@@ -1,6 +1,6 @@
-Resource = require '../../Resource'
+CrudResource = require '../../CrudResource'
 
-class TestResource extends Resource
+class TestCrudResource extends CrudResource
 	name: 'TestResource'
 	path: 'test-resource'
 	propertyMap: {
@@ -33,4 +33,4 @@ class TestResource extends Resource
 			return null
 		return object.propertyA
 
-module.exports = TestResource
+module.exports = TestCrudResource

@@ -1,4 +1,4 @@
-TestResource = require './sample/TestResourceCrudRead'
+TestResource = require './sample/TestCrudResourceRead'
 
 describe 'Resource', ->
 	r = null

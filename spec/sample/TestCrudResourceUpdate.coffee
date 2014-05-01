@@ -1,9 +1,8 @@
-TestResourceCrudRead = require './TestResourceCrudRead'
-
+TestCrudResourceRead = require './TestCrudResourceRead'
 _ = require 'lodash'
 q = require 'q'
 
-class TestResourceCrudUpdate extends TestResourceCrudRead
+class TestCrudResourceUpdate extends TestCrudResourceRead
 	crudUpdate: (id, data = null, propertyList = null) ->
 		
 		# implement logic to alter the test data
@@ -26,4 +25,4 @@ class TestResourceCrudUpdate extends TestResourceCrudRead
 		
 		return @crudRead id, propertyList
 
-module.exports = TestResourceCrudUpdate
+module.exports = TestCrudResourceUpdate

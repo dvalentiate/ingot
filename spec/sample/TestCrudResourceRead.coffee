@@ -1,9 +1,8 @@
-TestResource = require './TestResource'
-
+TestCrudResource = require './TestCrudResource'
 _ = require 'lodash'
 q = require 'q'
 
-class TestResourceCrudRead extends TestResource
+class TestCrudResourceRead extends TestCrudResource
 	crudRead: (id, propertyList = null) ->
 		defer = q.defer()
 		multiple = _.isArray id
@@ -26,7 +25,7 @@ class TestResourceCrudRead extends TestResource
 			
 			if propertyList != null
 				if _.isArray propertyList
-					content = @transform content, propertyList
+					content = _.pick content, propertyList
 				else
 					content = content[propertyList]
 			
@@ -38,4 +37,4 @@ class TestResourceCrudRead extends TestResource
 		@data = data
 		return @
 
-module.exports = TestResourceCrudRead
+module.exports = TestCrudResourceRead

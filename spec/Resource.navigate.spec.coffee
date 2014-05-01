@@ -1,4 +1,4 @@
-TestResource = require './sample/TestResourceCrudRead'
+TestResource = require './sample/TestCrudResourceRead'
 testData = require './sample/TestData.json'
 
 describe 'Resource.navigate', ->

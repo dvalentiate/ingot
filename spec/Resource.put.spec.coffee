@@ -1,6 +1,5 @@
-TestResource = require './sample/TestResourceCrudUpdate'
+TestResource = require './sample/TestCrudResourceUpdate'
 testData = require './sample/TestData.json'
-
 _ = require 'lodash'
 
 describe 'Resource update', ->

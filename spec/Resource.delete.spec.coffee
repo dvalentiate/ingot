@@ -1,6 +1,5 @@
-TestResource = require './sample/TestResourceCrudDelete'
+TestResource = require './sample/TestCrudResourceDelete'
 testData = require './sample/TestData.json'
-
 _ = require 'lodash'
 
 describe 'Resource delete', ->

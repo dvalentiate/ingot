@@ -1,4 +1,4 @@
-TestResource = require './sample/TestCrudResourceRead'
+TestResource = require './sample/TestResource'
 
 describe 'Resource', ->
 	r = null
@@ -14,18 +14,16 @@ describe 'Resource', ->
 				'propertyB'
 				'propertyC'
 				'propertyD'
-				'propertyE'
-				'propertyF'
-				'propertyG'
-				'propertyH'
-				'propertyI'
 			]
 	it ' should return a property definition', ->
 		expect(r.getPropertyDefinition 'propertyA')
 			.toEqual {type: 'value'}
 	it ' should return a property definition', ->
-		expect(r.getPropertyDefinition 'propertyD')
+		expect(r.getPropertyDefinition 'propertyB')
 			.toEqual {type: 'valueList'}
 	it ' should return a property definition', ->
-		expect(r.getPropertyDefinition 'propertyF')
+		expect(r.getPropertyDefinition 'propertyC')
+			.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyA'}
+	it ' should return a property definition', ->
+		expect(r.getPropertyDefinition 'propertyD')
 			.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyB'}

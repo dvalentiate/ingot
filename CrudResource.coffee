@@ -78,29 +78,21 @@ class CrudResource extends Resource
 		try
 			@crudCreate data, propertyList
 		catch exception
-			defer = q.defer()
-			defer.reject exception
-			return defer.promise
+			return Util.reject exception
 	safeCrudRead: (id, propertyList = null) ->
 		try
 			@crudRead id, propertyList
 		catch exception
-			defer = q.defer()
-			defer.reject exception
-			return defer.promise
+			return Util.reject exception
 	safeCrudUpdate: (id, data = null, propertyList = null) ->
 		try
 			@crudUpdate id, data, propertyList
 		catch exception
-			defer = q.defer()
-			defer.reject exception
-			return defer.promise
+			return Util.reject exception
 	safeCrudDelete: (id) ->
 		try
 			@crudDelete id
 		catch exception
-			defer = q.defer()
-			defer.reject exception
-			return defer.promise
+			return Util.reject exception
 
 module.exports = CrudResource

@@ -14,16 +14,17 @@ describe 'Resource', ->
 				'propertyB'
 				'propertyC'
 				'propertyD'
+				'propertyE'
 			]
 	it ' should return a property definition', ->
-		expect(r.getPropertyDefinition 'propertyA')
+		expect(r.getPropertyDefinition 'propertyB')
 			.toEqual {type: 'value'}
 	it ' should return a property definition', ->
-		expect(r.getPropertyDefinition 'propertyB')
-			.toEqual {type: 'valueList'}
-	it ' should return a property definition', ->
 		expect(r.getPropertyDefinition 'propertyC')
-			.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyA'}
+			.toEqual {type: 'valueList'}
 	it ' should return a property definition', ->
 		expect(r.getPropertyDefinition 'propertyD')
 			.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyB'}
+	it ' should return a property definition', ->
+		expect(r.getPropertyDefinition 'propertyE')
+			.toEqual {type: 'reference', resource: 'TestResource', idProperty: 'propertyC'}

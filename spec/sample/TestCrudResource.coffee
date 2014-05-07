@@ -13,6 +13,10 @@ class TestCrudResource extends CrudResource
 		'propertyG':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyC'}
 		'propertyH':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyD'}
 		'propertyI':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyE'}
+		'badPropertyA': {type: 'reference', resource: 'TestResource', idProperty: 'propertyM'} # invalid, for testing
+		'badPropertyB': {type: 'reference', resource: 'TestResource', idProperty: 'propertyF'} # invalid, for testing
+		'badPropertyC': {type: 'reference', resource: 'TestResourceTest', idProperty: 'propertyE'} # invalid, for testing
+		'badPropertyD': {type: 'invalidType', resource: 'TestResource', idProperty: 'propertyB'} # invalid, for testing
 	}
 	access: {
 		create: [

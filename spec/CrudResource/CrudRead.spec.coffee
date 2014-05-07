@@ -1,17 +1,17 @@
-TestResource = require './sample/TestCrudResourceRead'
-testData = require './sample/TestData.json'
+TestResource = require '../sample/TestCrudResourceRead'
+testData = require '../sample/TestData.json'
 
-describe 'Resource get', ->
+describe 'CrudResource crudRead', ->
 	r = null
 	beforeEach ->
 		r = new TestResource
-		# TestResource is really TestResourceRead, but not for testing
+		# TestResource is really TestCrudResourceRead, but not for testing
 		r.getResourceFactory().addResource r, 'TestResource'
 		r.setData testData
 	describe ' a value id for a non existent id', ->
 		value = null
 		beforeEach (done) ->
-			r.get(2).then (result) ->
+			r.crudRead(2).then (result) ->
 				value = result
 				done()
 		it ' should promise null', (done) ->

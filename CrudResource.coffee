@@ -94,5 +94,9 @@ class CrudResource extends Resource
 			@crudDelete id
 		catch exception
 			return Util.reject exception
+	crudCreate: (data = null, propertyList = null) ->
+	crudRead: (id, propertyList = null) ->
+	crudUpdate: (id, data = null, propertyList = null) ->
+	crudDelete: (id) ->
 
 module.exports = CrudResource

@@ -1,14 +1,11 @@
-TestResource = require '../sample/TestCrudResourceRead'
-testData = require '../sample/TestData.json'
+ReferenceImplementationCrudResource = require '../sample/CrudResource'
 q = require 'q'
 
 describe 'Resource get', ->
 	r = null
 	beforeEach ->
-		r = new TestResource
-		# TestResource is really TestCrudResourceRead, but not for testing
-		r.getResourceFactory().addResource r, 'TestResource'
-		r.setData testData
+		r = new SampleCrudResource
+		r.getResourceFactory().addResource r, 'TestResource' # added as TestResource for testing
 	describe ' no propertyList is specified', ->
 		describe ' crudRead is nominal', ->
 			promisedResult = null
@@ -88,19 +85,19 @@ describe 'Resource get', ->
 	describe ' propertyList uses a reference that specifies a property to another reference', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyB'] = {type: 'reference', resource: 'TestResource', idProperty: 'propertyF'}
+			r.propertyMap['badPropertyB'] = {type: 'reference', resource: 'TestResource', idProperty: 'propertyD'}
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyB').then null, (reason) ->
 				promisedReason = reason
 				done()
 		it ' should return rejected promise from crudRead', (done) ->
 			expect(r.crudRead.callCount).toEqual 0
-			expect(promisedReason).toEqual 'INVALID REFERENCE - TYPE : propertyF is not a value or value list as required by badPropertyB definition'
+			expect(promisedReason).toEqual 'INVALID REFERENCE - TYPE : propertyD is not a value or value list as required by badPropertyB definition'
 			done()
 	describe ' propertyList uses a reference that specifies an invalid resource', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyC'] = {type: 'reference', resource: 'TestResourceTest', idProperty: 'propertyE'}
+			r.propertyMap['badPropertyC'] = {type: 'reference', resource: 'TestResourceTest', idProperty: 'propertyB'}
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyC').then null, (reason) ->
 				promisedReason = reason

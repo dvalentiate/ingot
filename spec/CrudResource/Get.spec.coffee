@@ -1,4 +1,4 @@
-ReferenceImplementationCrudResource = require '../sample/CrudResource'
+SampleCrudResource = require '../sample/CrudResource'
 q = require 'q'
 
 describe 'Resource get', ->
@@ -9,7 +9,6 @@ describe 'Resource get', ->
 	describe ' no propertyList is specified', ->
 		describe ' crudRead is nominal', ->
 			promisedResult = null
-			promise = null
 			beforeEach (done) ->
 				spyOn(r, 'crudRead').andCallFake (id, propertyList = null) ->
 					defer = q.defer()
@@ -18,7 +17,7 @@ describe 'Resource get', ->
 				r.get('id param').then (result) ->
 					promisedResult = result
 					done()
-			it ' should call crudRead with id param of get and return crudRead promised value', (done) ->
+			it ' should call crudRead with id param of get and return crudRead\'s promised value', (done) ->
 				expect(r.crudRead.callCount).toEqual 1
 				expect(r.crudRead.mostRecentCall.args).toEqual ['id param', null]
 				expect(promisedResult).toEqual 'crud read result'
@@ -31,7 +30,7 @@ describe 'Resource get', ->
 				r.get('id param').then null, (reason) ->
 					rejectReason = reason
 					done()
-			it ' should call crudRead with id param of get and return crudRead promised value', (done) ->
+			it ' should call crudRead with id param of get and return crudRead\'s reject reason', (done) ->
 				expect(rejectReason).toEqual 'exception'
 				done()
 		describe ' crudRead returns a rejected promise', ->
@@ -45,7 +44,7 @@ describe 'Resource get', ->
 				r.get('id param').then null, (reason) ->
 					rejectReason = reason
 					done()
-			it ' should call crudRead with id param of get and return crudRead promised value', (done) ->
+			it ' should call crudRead with id param of get and return crudRead\'s promised value', (done) ->
 				expect(rejectReason).toEqual 'rejected'
 				done()
 	describe ' propertyList is an array', ->

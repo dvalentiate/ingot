@@ -76,22 +76,22 @@ class CrudResource extends Resource
 		return @safeCrudDelete id
 	safeCrudCreate: (data = null, propertyList = null) ->
 		try
-			@crudCreate data, propertyList
+			return @crudCreate data, propertyList
 		catch exception
 			return Util.reject exception
 	safeCrudRead: (id, propertyList = null) ->
 		try
-			@crudRead id, propertyList
+			return @crudRead id, propertyList
 		catch exception
 			return Util.reject exception
 	safeCrudUpdate: (id, data = null, propertyList = null) ->
 		try
-			@crudUpdate id, data, propertyList
+			return @crudUpdate id, data, propertyList
 		catch exception
 			return Util.reject exception
 	safeCrudDelete: (id) ->
 		try
-			@crudDelete id
+			return @crudDelete id
 		catch exception
 			return Util.reject exception
 	crudCreate: (data = null, propertyList = null) ->

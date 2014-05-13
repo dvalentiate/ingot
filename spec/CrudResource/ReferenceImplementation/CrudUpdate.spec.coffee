@@ -12,55 +12,71 @@ describe 'CrudResource crudDelete', ->
 		describe ' for a valid id', ->
 			promisedResult = null
 			beforeEach (done) ->
-				r.crudDelete(1).then (result) ->
+				r.crudUpdate(1, {
+					propertyB: 6
+				}).then (result) ->
 					promisedResult = result
 					done()
-			it ' should promise the deleted id', (done) ->
-				expect(promisedResult).toEqual 1
+			it ' should promise the updated id', (done) ->
+				expectedResult = _.cloneDeep data['1']
+				expectedResult.propertyB = 6
+				expect(promisedResult).toEqual expectedResult
 				done()
-			it ' should update the data', (done) ->
+			it ' should update data', (done) ->
 				expectedResult = _.cloneDeep data
-				delete expectedResult['1']
+				expectedResult['1'].propertyB = 6
 				expect(r.data).toEqual expectedResult
 				done()
 		describe ' for an invalid id', ->
 			promisedResult = null
 			beforeEach (done) ->
-				r.crudDelete(2).then (result) ->
+				r.crudUpdate(2, {
+					propertyB: 6
+				}).then (result) ->
 					promisedResult = result
 					done()
 			it ' should promise null', (done) ->
 				expect(promisedResult).toEqual null
 				done()
-			it ' should not affect data', (done) ->
-				expectedResult = _.cloneDeep data
-				expect(r.data).toEqual expectedResult
-				done()
 	describe ' a list of values', ->
 		describe ' for valid ids', ->
 			promisedResult = null
 			beforeEach (done) ->
-				r.crudDelete([1, 5]).then (result) ->
+				r.crudUpdate([1, 5], {
+					propertyB: 6
+				}).then (result) ->
 					promisedResult = result
 					done()
-			it ' should promise a list of ids', (done) ->
-				expect(promisedResult).toEqual [1, 5]
+			it ' should promise a list of updated resources', (done) ->
+				expectedResult = [
+					_.cloneDeep data['1']
+					_.cloneDeep data['5']
+				]
+				expectedResult[0].propertyB = 6
+				expectedResult[1].propertyB = 6
+				expect(promisedResult).toEqual expectedResult
 				done()
 		describe ' for some valid ids', ->
 			promisedResult = null
 			beforeEach (done) ->
-				r.crudDelete([1, 2]).then (result) ->
+				r.crudUpdate([1, 2], {
+					propertyB: 6
+				}).then (result) ->
 					promisedResult = result
 					done()
-			it ' should promise a success list of ids', (done) ->
-				expect(promisedResult).toEqual [1]
+			it ' should promise a list of a single updated resource', (done) ->
+				expectedResult = [_.cloneDeep data['1']]
+				expectedResult[0].propertyB = 6
+				expect(promisedResult).toEqual expectedResult
 				done()
 		describe ' for no valid ids', ->
 			promisedResult = null
 			beforeEach (done) ->
-				r.crudDelete([2, 3]).then (result) ->
+				r.crudUpdate([2, 3], {
+					propertyB: 6
+				}).then (result) ->
 					promisedResult = result
 					done()
-			it ' should promise an empty list', (done) ->
+			xit ' should promise an empty list', (done) ->
 				expect(promisedResult).toEqual []
 				done()

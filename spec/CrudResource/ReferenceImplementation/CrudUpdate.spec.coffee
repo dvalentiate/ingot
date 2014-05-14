@@ -2,7 +2,7 @@ ReferenceImplementationCrudResource = require '../../sample/CrudResource/Referen
 data = require '../../sample/CrudResource/ReferenceImplementation/Data.json'
 _ = require 'lodash'
 
-describe 'CrudResource crudDelete', ->
+describe 'CrudResource crudUpdate', ->
 	r = null
 	beforeEach ->
 		r = new ReferenceImplementationCrudResource

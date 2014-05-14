@@ -10,9 +10,6 @@ class SampleCrudResource extends CrudResource
 		'propertyD':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyB'}
 		'propertyE':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyC'}
 	}
-	getIdForObject: (object) ->
-		if object.propertyA == 'undefined'
-			return null
-		return object.propertyA
+	idProperty: 'propertyA'
 
 module.exports = SampleCrudResource

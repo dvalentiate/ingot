@@ -27,17 +27,24 @@ class ReferenceImplementationCrudResource extends CrudResource
 			{matchType: 'boolean', path: '{true}'}
 		]
 	}
-	getIdForObject: (object) ->
-		if object.propertyA == 'undefined'
-			return null
-		return object.propertyA
+	idProperty: 'propertyA'
 	setData: (data) ->
 		@data = data
 		return @
 	crudCreate: (data = null, propertyList = null) ->
-		defer = q.defer()
-		defer.resolve(data)
-		return defer.promise
+		multiple = _.isArray data
+		if !multiple
+			data = [data]
+		id = []
+		for x in data
+			v = if typeof x[@idProperty] == 'undefined' then null else x[@idProperty]
+			if v == null || typeof @data[v + ''] != 'undefined'
+				v = Object.keys(@data).reduce (x, y) -> 1 + if +x > +y then +x else +y
+			id.push v
+			@data[v + ''] = x
+		if !multiple
+			id = id[0]
+		return @crudRead id, propertyList
 	crudRead: (id, propertyList = null) ->
 		defer = q.defer()
 		multiple = _.isArray id
@@ -68,7 +75,6 @@ class ReferenceImplementationCrudResource extends CrudResource
 		defer.resolve if multiple then result else result[0]
 		return defer.promise
 	crudUpdate: (id, data = null, propertyList = null) ->
-		
 		# implement logic to alter the test data
 		multiple = _.isArray id
 		if !multiple
@@ -79,7 +85,7 @@ class ReferenceImplementationCrudResource extends CrudResource
 				continue
 			
 			if _.isObject x
-				x = @getIdForObject x
+				x = x[@idProperty]
 			else
 				x = x + ''
 			

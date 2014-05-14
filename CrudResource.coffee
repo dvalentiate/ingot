@@ -53,7 +53,7 @@ class CrudResource extends Resource
 		# determine which of the id's require CRUD update vs CRUD create
 		@safeCrudRead(id).then (readResult) ->
 			resultIdList = []
-			resultIdList.push resource.getIdForObject x for x in readResult
+			resultIdList.push resource[resource.idProperty] x for x in readResult
 			
 			deferList = []
 			

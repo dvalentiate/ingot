@@ -79,8 +79,9 @@ class ReferenceImplementationCrudResource extends CrudResource
 		multiple = _.isArray id
 		if !multiple
 			id = [id]
+			data = [data]
 		
-		for x in id
+		for x, k in id
 			if x == null
 				continue
 			
@@ -89,7 +90,21 @@ class ReferenceImplementationCrudResource extends CrudResource
 			else
 				x = x + ''
 			
-			@data[x] = _.extend @data[x], data
+			if typeof @data[x] == 'undefined'
+				# id item is referencing an invalid resource, nothing to do
+				continue
+			
+			if typeof data[k][@idProperty] == 'undefined'
+				# ensure that data has a id property
+				# because of our storage system indexes are string and the id properties are integers
+				data[k][@idProperty] = parseInt(x)
+			
+			if x != data[k][@idProperty] + ''
+				# the resource is moving because the id property is different
+				id[k] = data[k][@idProperty] + ''
+				delete @data[x]
+			
+			@data[id[k]] = data[k]
 		if !multiple
 			id = id[0]
 		

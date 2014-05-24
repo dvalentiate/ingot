@@ -5,7 +5,7 @@ describe 'Resource get', ->
 	r = null
 	beforeEach ->
 		r = new SampleCrudResource
-		r.getResourceFactory().addResource r, 'TestResource' # added as TestResource for testing
+		r.getResourceFactory().addResource r
 	describe ' no propertyList is specified', ->
 		describe ' crudRead is nominal', ->
 			promisedResult = null
@@ -67,12 +67,12 @@ describe 'Resource get', ->
 				done()
 		it ' should return rejected promise from crudRead', (done) ->
 			expect(r.crudRead.callCount).toEqual 0
-			expect(promisedReason).toEqual 'INVALID PROPERTY - UNKNOWN : badPropertyX is not a propertyList of TestResource'
+			expect(promisedReason).toEqual 'INVALID PROPERTY - UNKNOWN : badPropertyX is not a propertyList of SampleCrudResource'
 			done()
 	describe ' propertyList uses a reference that specifies an invalid id property', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyA'] = {type: 'reference', resource: 'TestResource', idProperty: 'propertyM'}
+			r.propertyMap['badPropertyA'] = {type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyM'}
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyA').then null, (reason) ->
 				promisedReason = reason
@@ -84,7 +84,7 @@ describe 'Resource get', ->
 	describe ' propertyList uses a reference that specifies a property to another reference', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyB'] = {type: 'reference', resource: 'TestResource', idProperty: 'propertyD'}
+			r.propertyMap['badPropertyB'] = {type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyD'}
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyB').then null, (reason) ->
 				promisedReason = reason
@@ -96,19 +96,19 @@ describe 'Resource get', ->
 	describe ' propertyList uses a reference that specifies an invalid resource', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyC'] = {type: 'reference', resource: 'TestResourceTest', idProperty: 'propertyB'}
+			r.propertyMap['badPropertyC'] = {type: 'reference', resource: 'InvalidResource', idProperty: 'propertyB'}
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyC').then null, (reason) ->
 				promisedReason = reason
 				done()
 		it ' should return rejected promise from crudRead', (done) ->
 			expect(r.crudRead.callCount).toEqual 0
-			expect(promisedReason).toEqual 'INVALID REFERENCE - RESOURCE : TestResourceTest was not provided by the resource factory'
+			expect(promisedReason).toEqual 'INVALID REFERENCE - RESOURCE : InvalidResource was not provided by the resource factory'
 			done()
 	describe ' propertyList uses a reference that specifies an invalid type', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyD'] = {type: 'invalidType', resource: 'TestResource', idProperty: 'propertyB'}
+			r.propertyMap['badPropertyD'] = {type: 'invalidType', resource: 'SampleCrudResource', idProperty: 'propertyB'}
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyD').then null, (reason) ->
 				promisedReason = reason

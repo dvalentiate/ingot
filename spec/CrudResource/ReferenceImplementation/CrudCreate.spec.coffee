@@ -6,7 +6,7 @@ describe 'CrudResource crudCreate', ->
 	r = null
 	beforeEach ->
 		r = new ReferenceImplementationCrudResource
-		r.getResourceFactory().addResource r, 'TestResource' # ReferenceImplementationCrudResource set as TestResouce for testing
+		r.getResourceFactory().addResource r, 'SampleCrudResource' # ReferenceImplementationCrudResource set as SampleCrudResource for spec
 		r.setData _.cloneDeep data
 	describe ' a value', ->
 		describe ' with a specified but non conflicting id property', ->

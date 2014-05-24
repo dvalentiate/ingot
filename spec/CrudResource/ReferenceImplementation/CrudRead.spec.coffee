@@ -5,7 +5,7 @@ describe 'CrudResource crudRead', ->
 	r = null
 	beforeEach ->
 		r = new ReferenceImplementationCrudResource
-		r.getResourceFactory().addResource r, 'TestResource' # ReferenceImplementationCrudResource set as TestResouce for testing
+		r.getResourceFactory().addResource r, 'SampleCrudResource' # ReferenceImplementationCrudResource set as SampleCrudResource for spec
 		r.setData data
 	describe ' a value id for a non existent id', ->
 		promisedResult = null

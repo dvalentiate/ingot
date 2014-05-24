@@ -5,7 +5,7 @@ describe 'Resource delete', ->
 	r = null
 	beforeEach ->
 		r = new SampleCrudResource
-		r.getResourceFactory().addResource r, 'TestResource' # added as TestResource for testing
+		r.getResourceFactory().addResource r
 	describe ' a value', ->
 		describe ' for a valid id', ->
 			promisedResult = null

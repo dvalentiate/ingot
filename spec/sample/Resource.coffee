@@ -1,8 +1,8 @@
 Resource = require '../../Resource'
 
-class TestResource extends Resource
-	name: 'TestResource'
-	path: 'test-resource'
+class SampleResource extends Resource
+	name: 'SampleResource'
+	path: 'sample-resource'
 	propertyMap: {
 		'propertyA':    'value'
 		'propertyB':    'value'
@@ -11,4 +11,4 @@ class TestResource extends Resource
 		'propertyE':    {type: 'reference', resource: 'TestResource', idProperty: 'propertyC'}
 	}
 
-module.exports = TestResource
+module.exports = SampleResource

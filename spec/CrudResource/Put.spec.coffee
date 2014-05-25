@@ -18,7 +18,7 @@ describe 'Resource put', ->
 						return defer.promise
 					spyOn(r, 'crudRead').andCallFake (id = null, propertyList = null) ->
 						defer = q.defer()
-						if id.length = 1 && id[0] == 'id param'
+						if id.length == 1 && id[0] == 'id param'
 							defer.resolve [{'propertyA': 'id param'}]
 						else if id == ['array id param 1', 'array id param 2', 'array id param 3']
 							defer.resolve ['array id param 2']
@@ -49,9 +49,9 @@ describe 'Resource put', ->
 							done()
 					it ' should call crudRead and then crudCreate and return a promised value', (done) ->
 						expect(r.crudRead.callCount).toEqual 1
-						expect(r.crudRead.mostRecentCall.args).toEqual [[], null]
+						expect(r.crudRead.mostRecentCall.args).toEqual [['new id param'], null]
 						expect(r.crudUpdate.callCount).toEqual 0
 						expect(r.crudCreate.callCount).toEqual 1
-						expect(r.crudCreate.mostRecentCall.args).toEqual [{'propertyA': 7}, null]
+						expect(r.crudCreate.mostRecentCall.args).toEqual [['new id param'], {propertyA : 7}]
 						expect(promisedResult).toEqual 'crud create result'
 						done()

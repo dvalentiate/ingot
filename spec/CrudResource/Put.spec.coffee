@@ -68,10 +68,10 @@ describe 'Resource put', ->
 			expect(r.crudRead.callCount).toEqual 1
 			expect(rejectReason).toEqual 'crudRead problem'
 			done()
-	describe ' crudCreate is throwing errors', ->
+	describe ' crudCreate and crudUpdate are throwing errors', ->
 		promisedResult = null
 		rejectReason = null
-		beforeEach (done) ->
+		beforeEach ->
 			spyOn(r, 'crudCreate').andThrow 'crudCreate problem'
 			spyOn(r, 'crudRead').andCallFake (id = null, propertyList = null) ->
 				defer = q.defer()
@@ -82,14 +82,32 @@ describe 'Resource put', ->
 				else
 					defer.resolve []
 				return defer.promise
-			r.put('new id param', {'propertyA': 7}).then (result) ->
-				promisedResult = result
+			spyOn(r, 'crudUpdate').andThrow 'crudUpdate problem'
+		describe ' put on a new id', ->
+			beforeEach (done) ->
+				r.put('new id param', {'propertyA': 7}).then (result) ->
+					promisedResult = result
+					done()
+				, (reason) ->
+					rejectReason = reason
+					done()
+			it ' should call crudRead and then crudCreate on which it will fail', (done) ->
+				expect(r.crudRead.callCount).toEqual 1
+				expect(r.crudCreate.callCount).toEqual 1
+				expect(r.crudUpdate.callCount).toEqual 0
+				expect(rejectReason).toEqual 'crudCreate problem'
 				done()
-			, (reason) ->
-				rejectReason = reason
+		describe ' put on an existing id', ->
+			beforeEach (done) ->
+				r.put('id param', {'propertyA': 7}).then (result) ->
+					promisedResult = result
+					done()
+				, (reason) ->
+					rejectReason = reason
+					done()
+			it ' should call crudRead and then crudUpdate on which it will fail', (done) ->
+				expect(r.crudRead.callCount).toEqual 1
+				expect(r.crudCreate.callCount).toEqual 0
+				expect(r.crudUpdate.callCount).toEqual 1
+				expect(rejectReason).toEqual 'crudUpdate problem'
 				done()
-		it ' should call crudRead and then crudUpdate and return a promised value', (done) ->
-			expect(r.crudRead.callCount).toEqual 1
-			expect(r.crudCreate.callCount).toEqual 1
-			expect(rejectReason).toEqual 'crudCreate problem'
-			done()

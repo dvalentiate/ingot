@@ -8,7 +8,6 @@ describe 'Resource put', ->
 		r.getResourceFactory().addResource r
 	describe ' calls crudCreate, crudRead, crudUpdate, and they are working great with the provided params', ->
 		promisedResult = null
-		rejectReason = null
 		beforeEach ->
 			spyOn(r, 'crudCreate').andCallFake (data = null, propertyList = null) ->
 				defer = q.defer()
@@ -54,14 +53,10 @@ describe 'Resource put', ->
 				expect(promisedResult).toEqual 'crud update result'
 				done()
 	describe ' crudRead is throwing errors', ->
-		promisedResult = null
 		rejectReason = null
 		beforeEach (done) ->
 			spyOn(r, 'crudRead').andThrow 'crudRead problem'
-			r.put('id param', {'propertyA': 7}).then (result) ->
-				promisedResult = result
-				done()
-			, (reason) ->
+			r.put('id param', {'propertyA': 7}).then null, (reason) ->
 				rejectReason = reason
 				done()
 		it ' should call crudRead and then crudUpdate and return a promised value', (done) ->
@@ -69,7 +64,6 @@ describe 'Resource put', ->
 			expect(rejectReason).toEqual 'crudRead problem'
 			done()
 	describe ' crudCreate and crudUpdate are throwing errors', ->
-		promisedResult = null
 		rejectReason = null
 		beforeEach ->
 			spyOn(r, 'crudCreate').andThrow 'crudCreate problem'
@@ -85,10 +79,7 @@ describe 'Resource put', ->
 			spyOn(r, 'crudUpdate').andThrow 'crudUpdate problem'
 		describe ' put on a new id', ->
 			beforeEach (done) ->
-				r.put('new id param', {'propertyA': 7}).then (result) ->
-					promisedResult = result
-					done()
-				, (reason) ->
+				r.put('new id param', {'propertyA': 7}).then null, (reason) ->
 					rejectReason = reason
 					done()
 			it ' should call crudRead and then crudCreate on which it will fail', (done) ->
@@ -99,10 +90,7 @@ describe 'Resource put', ->
 				done()
 		describe ' put on an existing id', ->
 			beforeEach (done) ->
-				r.put('id param', {'propertyA': 7}).then (result) ->
-					promisedResult = result
-					done()
-				, (reason) ->
+				r.put('id param', {'propertyA': 7}).then null, (reason) ->
 					rejectReason = reason
 					done()
 			it ' should call crudRead and then crudUpdate on which it will fail', (done) ->

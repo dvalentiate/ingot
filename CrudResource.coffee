@@ -40,6 +40,7 @@ class CrudResource extends Resource
 			return @safeCrudRead id, propertyList
 		return Util.reject "INVALID PROPERTY - TYPE : #{ definition.type } is not a recognized propertyList type"
 	post: (data = null, propertyList = null) ->
+		return @safeCrudCreate data, propertyList
 	put: (id, data = null, propertyList = null) ->
 		defer = q.defer()
 		multiple = _.isArray id

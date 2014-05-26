@@ -45,6 +45,7 @@ class CrudResource extends Resource
 		multiple = _.isArray id
 		if !multiple
 			id = [id]
+			data = [data]
 		
 		result = []
 		
@@ -69,8 +70,12 @@ class CrudResource extends Resource
 					result = _.union result, createResult
 				deferList.push createDefer
 			
-			q.all(deferList).then () ->
+			q.all(deferList).then ->
 				defer.resolve if multiple then result else if result.length > 0 then result[0] else null
+			, (reason) ->
+				defer.reject reason
+		, (reason) ->
+			defer.reject reason
 		return defer.promise
 	delete: (id) ->
 		return @safeCrudDelete id

@@ -1,221 +1,134 @@
-TestResource = require './sample/TestResource'
-testData = require './sample/TestData.json'
-q = require 'q'
+Resource = require '../Resource'
 _ = require 'lodash'
+q = require 'q'
 
-fakeGet = (id, propertyList = null) ->
-		defer = q.defer()
-		multiple = _.isArray id
-		if !multiple
-			id = [id]
-		
-		result = []
-		for x in id
-			if x == null
-				result.push null
-				continue
-			
-			if _.isObject x
-				content = x
-			else
-				content = testData[x + '']
-			
-			if typeof content == 'undefined'
-				continue
-			
-			if propertyList != null
-				definition = @getPropertyDefinition propertyList
-				if definition.type == 'reference'
-					referenceIdDefinition = @getPropertyDefinition definition.idProperty
-					referencedResource = @getResourceFactory().getResource definition.resource
-					if referenceIdDefinition.type == 'value'
-						content = content[definition.idProperty]
-						if content != null
-							content = testData[content + '']
-						result.push content
-					if referenceIdDefinition.type == 'valueList'
-						multiple = true
-						content = content[definition.idProperty]
-						for x in content
-							if x != null
-								result.push testData[x + '']
-				if definition.type == 'value'
-					result.push content[propertyList]
-				if definition.type == 'valueList'
-					result.push content[propertyList]
-			else
-				result.push content
-			
-		defer.resolve if multiple then result else result[0]
-		return defer.promise
+# {type: 'value'}
+# {type: 'valueList'}
+# {type: 'reference', resource: 'Resource', idProperty: 'propertyB'}
 
-describe 'Resource.navigate', ->
+describe 'Resource navigate', ->
 	r = null
+	expectedResult = null
+	expectedGetRejectReason = null
+	promisedResult = null
+	rejectedReason = null
+	propertyDefinition = null
 	beforeEach ->
-		r = new TestResource
-		# TestResource is really TestResourceRead, but not for testing
-		r.getResourceFactory().addResource r, 'TestResource'
-		spyOn(r, 'get').andCallFake fakeGet
-	describe ' an empty path', ->
-		describe ' a value resourceObj', ->
-			promisedResult = null
+		expectedResult = null
+		expectedGetRejectReason = null
+		promisedResult = null
+		rejectedReason = null
+		r = new Resource
+		r.getResourceFactory().addResource r
+		# r.propertyMap = propertyMap
+		spyOn(r, 'get').andCallFake (id, propertyList = null) ->
+			defer = q.defer()
+			if expectedGetRejectReason == null
+				defer.resolve expectedResult
+			else
+				defer.reject expectedGetRejectReason
+			return defer.promise
+		spyOn(r, 'getPropertyDefinition').andCallFake (property) ->
+			return propertyDefinition
+	describe ' an empty path with any resourceObj', ->
+		describe ' get is nominal', ->
 			beforeEach (done) ->
-				r.navigate('', 1).then (result) ->
+				expectedResult = 'an object'
+				r.navigate('', 'id param').then (result) ->
 					promisedResult = result
 					done()
-			it ' should promise an object with an id equalling resourceObj', (done) ->
-				expect(promisedResult).toEqual testData['1']
-				done()
-			it ' should have used get once', ->
-				expect(r.get.callCount).toEqual 1
 			it ' should have passed get a resource identifier', ->
-				expect(r.get.mostRecentCall.args).toEqual [1]
-		describe ' an object resourceObj', ->
-			promisedResult = null
-			beforeEach (done) ->
-				r.navigate('', testData['1']).then (result) ->
-					promisedResult = result
-					done()
-			it ' should promise an object equalling resourceObj', (done) ->
-				expect(promisedResult).toEqual testData['1']
-				done()
-			it ' should have used get once', ->
 				expect(r.get.callCount).toEqual 1
-			it ' should have passed get a resource object', ->
-				expect(r.get.mostRecentCall.args).toEqual [testData['1']]
-		describe ' a list of values resourceObj', ->
-			promisedResult = null
+				expect(r.get.mostRecentCall.args).toEqual ['id param']
+			it ' should return a promise with the promised value being from get', ->
+				expect(promisedResult).toEqual expectedResult
+		describe ' get rejects promise', ->
 			beforeEach (done) ->
-				r.navigate('', [5, 6]).then (result) ->
-					promisedResult = result
+				expectedGetRejectReason = 'not feeling like it'
+				r.navigate('', 'id param').then null, (reason) ->
+					rejectedReason = reason
 					done()
-			it ' should promise a list of objects with ids equalling those in resourceObj', (done) ->
-				expect(promisedResult).toEqual [testData['5'], testData['6']]
-				done()
-			it ' should have used get once', ->
+			it ' should have passed get a resource identifier', ->
 				expect(r.get.callCount).toEqual 1
-			it ' should have passed get a list of resource identifiers', ->
-				expect(r.get.mostRecentCall.args).toEqual [[5, 6]]
-		describe ' resourceObj param is a list of objects', ->
-			promisedResult = null
-			beforeEach (done) ->
-				r.navigate('', [testData['5'], testData['6']]).then (result) ->
-					promisedResult = result
-					done()
-			it ' should promise a list the resource objects that were passed in', (done) ->
-				expect(promisedResult).toEqual [testData['5'], testData['6']]
-				done()
-			it ' should have used get once', ->
-				expect(r.get.callCount).toEqual 1
-			it ' should have passed get a list of resource objects', ->
-				expect(r.get.mostRecentCall.args).toEqual [[testData['5'], testData['6']]]
+				expect(r.get.mostRecentCall.args).toEqual ['id param']
+			it ' should return a promise which is rejected', ->
+				expect(rejectedReason).toEqual expectedGetRejectReason
 	describe ' path', ->
-		describe ' a value', ->
-			describe ' a value resourceObj', ->
-				promisedResult = null
+		describe ' a value with any resourceObj', ->
+			beforeEach ->
+				propertyDefinition = {type: 'value'}
+			describe ' get is nominal', ->
 				beforeEach (done) ->
-					r.navigate('propertyB', 1).then (result) ->
+					expectedResult = 'a value'
+					r.navigate('property param', 'id param').then (result) ->
 						promisedResult = result
 						done()
-				it ' should promise a value equalliing the property in resourceObj', (done) ->
-					expect(promisedResult).toEqual 5
-					done()
-				it ' should have used get once', ->
-					expect(r.get.callCount).toEqual 1
 				it ' should have passed get a resource identifier', ->
-					expect(r.get.mostRecentCall.args).toEqual [1, 'propertyB']
-			describe ' an object resourceObj', ->
-				promisedResult = null
-				beforeEach (done) ->
-					r.navigate('propertyB', testData['1']).then (result) ->
-						promisedResult = result
-						done()
-				it ' should promise a value equalling the property of resourceObject', (done) ->
-					expect(promisedResult).toEqual 5
-					done()
-				it ' should have used get once', ->
 					expect(r.get.callCount).toEqual 1
-				it ' should have passed get a resource object', ->
-					expect(r.get.mostRecentCall.args).toEqual [testData['1'], 'propertyB']
-			describe ' a list of values resourceObj', ->
-				promisedResult = null
+					expect(r.get.mostRecentCall.args).toEqual ['id param', 'property param']
+				it ' should return a promise with the promised value being from get', ->
+					expect(promisedResult).toEqual expectedResult
+			describe ' get rejects promise', ->
 				beforeEach (done) ->
-					r.navigate('propertyA', [5, 6]).then (result) ->
-						promisedResult = result
+					expectedGetRejectReason = 'not feeling like it'
+					r.navigate('property param', 'id param').then null, (reason) ->
+						rejectedReason = reason
 						done()
-				it ' should promise a list of values equalling the property of each in resourceObj', (done) ->
-					expect(promisedResult).toEqual [5, 6]
-					done()
-				it ' should have used get once', ->
+				it ' should have passed get a resource identifier', ->
 					expect(r.get.callCount).toEqual 1
-				it ' should have passed get a list of resource identifiers', ->
-					expect(r.get.mostRecentCall.args).toEqual [[5, 6], 'propertyA']
-			describe ' resourceObj param is a list of objects', ->
-				promisedResult = null
-				beforeEach (done) ->
-					r.navigate('propertyA', [testData['5'], testData['6']]).then (result) ->
-						promisedResult = result
-						done()
-				it ' should promise a list of values equalling the property of each in resourceObjects', (done) ->
-					expect(promisedResult).toEqual [5, 6]
-					done()
-				it ' should have used get once', ->
-					expect(r.get.callCount).toEqual 1
-				it ' should have passed get a list of resource objects', ->
-					expect(r.get.mostRecentCall.args).toEqual [[testData['5'], testData['6']], 'propertyA']
+					expect(r.get.mostRecentCall.args).toEqual ['id param', 'property param']
+				it ' should return a promise which is rejected', ->
+					expect(rejectedReason).toEqual expectedGetRejectReason
 		describe ' a value list', ->
-			describe ' a value resourceObj', ->
-				promisedResult = null
-				beforeEach (done) ->
-					r.navigate('propertyC', 1).then (result) ->
-						promisedResult = result
-						done()
-				it ' should promise the list values equalling the property in resourceObj', (done) ->
-					expect(promisedResult).toEqual [5, 6]
-					done()
-				it ' should have used get once', ->
-					expect(r.get.callCount).toEqual 1
-				it ' should have passed get a resource identifier', ->
-					expect(r.get.mostRecentCall.args).toEqual [1, 'propertyC']
-			describe ' an object resourceObj', ->
-				promisedResult = null
-				beforeEach (done) ->
-					r.navigate('propertyC', testData['1']).then (result) ->
-						promisedResult = result
-						done()
-				it ' should promise the list values equalling the property in resourceObject', (done) ->
-					expect(promisedResult).toEqual [5, 6]
-					done()
-				it ' should have used get once', ->
-					expect(r.get.callCount).toEqual 1
-				it ' should have passed get a resource object', ->
-					expect(r.get.mostRecentCall.args).toEqual [testData['1'], 'propertyC']
-			describe ' a list of values resourceObj', ->
-				promisedResult = null
-				beforeEach (done) ->
-					r.navigate('propertyC', [5, 6]).then (result) ->
-						promisedResult = result
-						done()
-				it ' should promise a consolodated list of values equalling the property in resourceObj', (done) ->
-					expect(promisedResult).toEqual [1]
-					done()
-				it ' should have used get once', ->
-					expect(r.get.callCount).toEqual 1
-				it ' should have passed get a list of resource identifiers', ->
-					expect(r.get.mostRecentCall.args).toEqual [[5, 6], 'propertyC']
-			describe ' resourceObj param is a list of objects', ->
-				promisedResult = null
-				beforeEach (done) ->
-					r.navigate('propertyC', [testData['5'], testData['6']]).then (result) ->
-						promisedResult = result
-						done()
-				it ' should promise a consolodated list of values equalling the property for each in resourceObj', (done) ->
-					expect(promisedResult).toEqual [1]
-					done()
-				it ' should have used get once', ->
-					expect(r.get.callCount).toEqual 1
-				it ' should have passed get a list of resource objects', ->
-					expect(r.get.mostRecentCall.args).toEqual [[testData['5'], testData['6']], 'propertyC']
+			beforeEach ->
+				propertyDefinition = {type: 'valueList'}
+			describe ' a non singular resourceObj', ->
+				describe ' get is nominal', ->
+					beforeEach (done) ->
+						expectedResult = 'a value'
+						r.navigate('property param', 'id param').then (result) ->
+							promisedResult = result
+							done()
+					it ' should have passed get a resource identifier', ->
+						expect(r.get.callCount).toEqual 1
+						expect(r.get.mostRecentCall.args).toEqual ['id param', 'property param']
+					it ' should return a promise with the promised value being from get', ->
+						expect(promisedResult).toEqual expectedResult
+				describe ' get rejects promise', ->
+					beforeEach (done) ->
+						expectedGetRejectReason = 'not feeling like it'
+						r.navigate('property param', 'id param').then null, (reason) ->
+							rejectedReason = reason
+							done()
+					it ' should have passed get a resource identifier', ->
+						expect(r.get.callCount).toEqual 1
+						expect(r.get.mostRecentCall.args).toEqual ['id param', 'property param']
+					it ' should return a promise which is rejected', ->
+						expect(rejectedReason).toEqual expectedGetRejectReason
+			describe ' a resourceObj list', ->
+				describe ' get is nominal', ->
+					beforeEach (done) ->
+						expectedResult = ['a value 2']
+						r.navigate('property param', ['id param 1', 'id param 2']).then (result) ->
+							promisedResult = result
+							done()
+					it ' should have passed get a resource identifier', ->
+						expect(r.get.callCount).toEqual 1
+						expect(r.get.mostRecentCall.args).toEqual [['id param 1', 'id param 2'], 'property param']
+					it ' should return a promise with the promised value being from get', ->
+						expect(promisedResult).toEqual expectedResult
+				describe ' get rejects promise', ->
+					beforeEach (done) ->
+						expectedGetRejectReason = 'not feeling like it'
+						r.navigate('property param', ['id param 1', 'id param 2']).then null, (reason) ->
+							rejectedReason = reason
+							done()
+					it ' should have passed get a resource identifier', ->
+						expect(r.get.callCount).toEqual 1
+						expect(r.get.mostRecentCall.args).toEqual [['id param 1', 'id param 2'], 'property param']
+					it ' should return a promise which is rejected', ->
+						expect(rejectedReason).toEqual expectedGetRejectReason
+###
 		describe ' a reference', ->
 			describe ' a value id', ->
 				describe ' object resourceObj', ->
@@ -356,3 +269,4 @@ describe 'Resource.navigate', ->
 					it ' should promise a list of values', (done) ->
 						expect(promisedResult).toEqual [testData['5'], testData['6']]
 						done()
+###

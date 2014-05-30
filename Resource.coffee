@@ -41,7 +41,7 @@ class Resource
 		# 			else
 		# 				navigation.path = navigation.path + '/' + part
 	getPropertyDefinition: (property) ->
-		if not @propertyMap[property]?
+		if typeof @propertyMap[property] == 'undefined'
 			return null
 		definition = @propertyMap[property]
 		if typeof definition == 'string'
@@ -56,9 +56,9 @@ class Resource
 		if path.length == 0
 			return @get resourceObj
 		property = path[0]
-		definition = @getPropertyDefinition path[0]
+		definition = @getPropertyDefinition property
 		if definition == null
-			throw "INVALID PATH - UNKNOWN : #{ path[0] } is an unknown property for #{ @name }"
+			throw "INVALID PATH - UNKNOWN : #{ property } is an unknown property for #{ @name }"
 		if definition.type == 'reference'
 			resource = @
 			return @get(resourceObj, property)

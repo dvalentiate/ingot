@@ -6,8 +6,6 @@ class Resource
 	account: null
 	resourceFactory: null
 	constructor: ->
-	getPath: ->
-		return @path
 	getPropertySet: ->
 		return _.keys @propertyMap
 	setAccessContext: (account) ->

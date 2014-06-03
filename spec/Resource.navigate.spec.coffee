@@ -8,32 +8,33 @@ q = require 'q'
 
 describe 'Resource navigate', ->
 	r = null
-	expectedResult = null
-	expectedGetRejectReason = null
+	spyGetResult = null
+	spyGetRejectReason = null
 	promisedResult = null
 	rejectedReason = null
-	propertyDefinition = null
+	spyGetPropertyDefinitionResult = null
 	beforeEach ->
-		expectedResult = null
-		expectedGetRejectReason = null
+		spyGetResult = null
+		spyGetRejectReason = null
 		promisedResult = null
 		rejectedReason = null
 		r = new Resource
 		r.getResourceFactory().addResource r
-		# r.propertyMap = propertyMap
+		r._get = r.get # so that spy can be removed
 		spyOn(r, 'get').andCallFake (id, propertyList = null) ->
 			defer = q.defer()
-			if expectedGetRejectReason == null
-				defer.resolve expectedResult
+			if spyGetRejectReason == null
+				defer.resolve spyGetResult
 			else
-				defer.reject expectedGetRejectReason
+				defer.reject spyGetRejectReason
 			return defer.promise
+		r._getPropertyDefinition = r.getPropertyDefinition # so that spy can be removed
 		spyOn(r, 'getPropertyDefinition').andCallFake (property) ->
-			return propertyDefinition
+			return spyGetPropertyDefinitionResult
 	describe ' an empty path with any resourceObj', ->
 		describe ' get is nominal', ->
 			beforeEach (done) ->
-				expectedResult = 'an object'
+				spyGetResult = 'an object'
 				r.navigate('', 'id param').then (result) ->
 					promisedResult = result
 					done()
@@ -41,10 +42,10 @@ describe 'Resource navigate', ->
 				expect(r.get.callCount).toEqual 1
 				expect(r.get.mostRecentCall.args).toEqual ['id param']
 			it ' should return a promise with the promised value being from get', ->
-				expect(promisedResult).toEqual expectedResult
+				expect(promisedResult).toEqual spyGetResult
 		describe ' get rejects promise', ->
 			beforeEach (done) ->
-				expectedGetRejectReason = 'not feeling like it'
+				spyGetRejectReason = 'not feeling like it'
 				r.navigate('', 'id param').then null, (reason) ->
 					rejectedReason = reason
 					done()
@@ -52,14 +53,14 @@ describe 'Resource navigate', ->
 				expect(r.get.callCount).toEqual 1
 				expect(r.get.mostRecentCall.args).toEqual ['id param']
 			it ' should return a promise which is rejected', ->
-				expect(rejectedReason).toEqual expectedGetRejectReason
+				expect(rejectedReason).toEqual spyGetRejectReason
 	describe ' path', ->
 		describe ' a value with any resourceObj', ->
 			beforeEach ->
-				propertyDefinition = {type: 'value'}
+				spyGetPropertyDefinitionResult = {type: 'value'}
 			describe ' get is nominal', ->
 				beforeEach (done) ->
-					expectedResult = 'a value'
+					spyGetResult = 'a value'
 					r.navigate('property param', 'id param').then (result) ->
 						promisedResult = result
 						done()
@@ -67,10 +68,10 @@ describe 'Resource navigate', ->
 					expect(r.get.callCount).toEqual 1
 					expect(r.get.mostRecentCall.args).toEqual ['id param', 'property param']
 				it ' should return a promise with the promised value being from get', ->
-					expect(promisedResult).toEqual expectedResult
+					expect(promisedResult).toEqual spyGetResult
 			describe ' get rejects promise', ->
 				beforeEach (done) ->
-					expectedGetRejectReason = 'not feeling like it'
+					spyGetRejectReason = 'not feeling like it'
 					r.navigate('property param', 'id param').then null, (reason) ->
 						rejectedReason = reason
 						done()
@@ -78,14 +79,14 @@ describe 'Resource navigate', ->
 					expect(r.get.callCount).toEqual 1
 					expect(r.get.mostRecentCall.args).toEqual ['id param', 'property param']
 				it ' should return a promise which is rejected', ->
-					expect(rejectedReason).toEqual expectedGetRejectReason
+					expect(rejectedReason).toEqual spyGetRejectReason
 		describe ' a value list', ->
 			beforeEach ->
-				propertyDefinition = {type: 'valueList'}
+				spyGetPropertyDefinitionResult = {type: 'valueList'}
 			describe ' a non singular resourceObj', ->
 				describe ' get is nominal', ->
 					beforeEach (done) ->
-						expectedResult = 'a value'
+						spyGetResult = 'a value'
 						r.navigate('property param', 'id param').then (result) ->
 							promisedResult = result
 							done()
@@ -93,10 +94,10 @@ describe 'Resource navigate', ->
 						expect(r.get.callCount).toEqual 1
 						expect(r.get.mostRecentCall.args).toEqual ['id param', 'property param']
 					it ' should return a promise with the promised value being from get', ->
-						expect(promisedResult).toEqual expectedResult
+						expect(promisedResult).toEqual spyGetResult
 				describe ' get rejects promise', ->
 					beforeEach (done) ->
-						expectedGetRejectReason = 'not feeling like it'
+						spyGetRejectReason = 'not feeling like it'
 						r.navigate('property param', 'id param').then null, (reason) ->
 							rejectedReason = reason
 							done()
@@ -104,11 +105,11 @@ describe 'Resource navigate', ->
 						expect(r.get.callCount).toEqual 1
 						expect(r.get.mostRecentCall.args).toEqual ['id param', 'property param']
 					it ' should return a promise which is rejected', ->
-						expect(rejectedReason).toEqual expectedGetRejectReason
+						expect(rejectedReason).toEqual spyGetRejectReason
 			describe ' a resourceObj list', ->
 				describe ' get is nominal', ->
 					beforeEach (done) ->
-						expectedResult = ['a value 2']
+						spyGetResult = [['a value 1', 'a value 2'], ['a value 2']]
 						r.navigate('property param', ['id param 1', 'id param 2']).then (result) ->
 							promisedResult = result
 							done()
@@ -116,10 +117,10 @@ describe 'Resource navigate', ->
 						expect(r.get.callCount).toEqual 1
 						expect(r.get.mostRecentCall.args).toEqual [['id param 1', 'id param 2'], 'property param']
 					it ' should return a promise with the promised value being from get', ->
-						expect(promisedResult).toEqual expectedResult
+						expect(promisedResult).toEqual ['a value 1', 'a value 2']
 				describe ' get rejects promise', ->
 					beforeEach (done) ->
-						expectedGetRejectReason = 'not feeling like it'
+						spyGetRejectReason = 'not feeling like it'
 						r.navigate('property param', ['id param 1', 'id param 2']).then null, (reason) ->
 							rejectedReason = reason
 							done()
@@ -127,146 +128,71 @@ describe 'Resource navigate', ->
 						expect(r.get.callCount).toEqual 1
 						expect(r.get.mostRecentCall.args).toEqual [['id param 1', 'id param 2'], 'property param']
 					it ' should return a promise which is rejected', ->
-						expect(rejectedReason).toEqual expectedGetRejectReason
-###
-		describe ' a reference', ->
-			describe ' a value id', ->
-				describe ' object resourceObj', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyD', testData['1']).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise an object equalling the reference\'s id', (done) ->
-						expect(promisedResult).toEqual testData['5']
-						done()
-					it ' should have used get 2 times', ->
-						expect(r.get.callCount).toEqual 2
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[0]).toEqual [testData['1'], 'propertyD']
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[1]).toEqual [testData['5']]
-				describe ' object with null reference resourceObj', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyD', testData['5']).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise an empty list of objects', (done) ->
-						expect(promisedResult).toEqual null
-						done()
-					it ' should have used get 2 times', ->
-						expect(r.get.callCount).toEqual 2
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[0]).toEqual [testData['5'], 'propertyD']
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[1]).toEqual [null]
-				describe ' list with one object with null reference resourceObj', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyD', [testData['5']]).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise an empty list of objects', (done) ->
-						expect(promisedResult).toEqual []
-						done()
-					it ' should have used get 2 times', ->
-						expect(r.get.callCount).toEqual 2
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[0]).toEqual [[testData['5']], 'propertyD']
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[1]).toEqual [[]]
-				describe ' list of objects resourceObj', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyD', [testData['5'], testData['6']]).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise a list of objects matching the reference\'s id', (done) ->
-						expect(promisedResult).toEqual [testData['5']]
-						done()
-					it ' should have used get 2 times', ->
-						expect(r.get.callCount).toEqual 2
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[0]).toEqual [[testData['5'], testData['6']], 'propertyD']
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[1]).toEqual [[testData['5']]]
-			describe ' value list id reference', ->
-				describe ' object resourceObj', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyE', testData['1']).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise a list of objects matching the reference\'s id', (done) ->
-						expect(promisedResult).toEqual [testData['5'], testData['6']]
-						done()
-					it ' should have used get 2 times', ->
-						expect(r.get.callCount).toEqual 2
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[0]).toEqual [testData['1'], 'propertyE']
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[1]).toEqual [[testData['5'], testData['6']]]
-				describe ' list of objects resourceObj', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyE', [testData['5'], testData['6']]).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise a list of objects matching the reference\'s id', (done) ->
-						expect(promisedResult).toEqual [testData['1']]
-						done()
-					it ' should have used get 2 times', ->
-						expect(r.get.callCount).toEqual 2
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[0]).toEqual [[testData['5'], testData['6']], 'propertyE']
-					it ' should have passed get a resource object', ->
-						expect(r.get.argsForCall[1]).toEqual [[testData['1']]]
-		describe ' multistep', ->
-			describe ' to property', ->
-				promisedResult = null
+						expect(rejectedReason).toEqual spyGetRejectReason
+		describe ' a one to one reference', ->
+			beforeEach ->
+				r.get = r._get # removes existing spy
+				spyOn(r, 'get').andCallFake (id, propertyList = null) ->
+					defer = q.defer()
+					if spyGetRejectReason != null && typeof spyGetRejectReason[id] != 'undefined'
+						defer.reject spyGetRejectReason[id]
+					else
+						defer.resolve spyGetResult[id]
+					return defer.promise
+				r.getPropertyDefinition = r._getPropertyDefinition # removes existing spy
+				spyOn(r, 'getPropertyDefinition').andCallFake (property) ->
+					return spyGetPropertyDefinitionResult[property]
+			describe ' get is nominal', ->
 				beforeEach (done) ->
-					r.navigate('propertyE/propertyA', 1).then (result) ->
+					spyGetPropertyDefinitionResult =
+						'reference property param': {type: 'reference', resource: 'Resource', idProperty: 'referenced id param'}
+					spyGetResult =
+						'id param': 'referenced id param'
+						'referenced id param': 'an object'
+					r.navigate('reference property param', 'id param').then (result) ->
 						promisedResult = result
 						done()
-				it ' should promise a list of values', (done) ->
-					expect(promisedResult).toEqual [5, 6]
-					done()
-			describe ' to reference', ->
-				describe ' to value', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyE/propertyB', 1).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise a list of values', (done) ->
-						expect(promisedResult).toEqual [null, 5]
+				it ' should have passed get a resource identifier', ->
+					expect(r.get.callCount).toEqual 2
+					expect(r.get.calls[0].args).toEqual ['id param', 'reference property param']
+					expect(r.get.calls[1].args).toEqual ['referenced id param']
+				it ' should return a promise with the promised value being from get', ->
+					expect(promisedResult).toEqual 'an object'
+			describe ' reference get rejects promise', ->
+				beforeEach (done) ->
+					spyGetPropertyDefinitionResult =
+						'reference property param': {type: 'reference', resource: 'Resource', idProperty: 'referenced id param'}
+					spyGetRejectReason = {'id param': 'not feeling like it'}
+					r.navigate('reference property param', 'id param').then null, (reason) ->
+						rejectedReason = reason
 						done()
-				describe ' to list of values', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyE/propertyC', 1).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise a list of values', (done) ->
-						expect(promisedResult).toEqual [1]
+				it ' should have passed get a resource identifier', ->
+					expect(r.get.callCount).toEqual 1
+					expect(r.get.calls[0].args).toEqual ['id param', 'reference property param']
+				it ' should return a promise which is rejected', ->
+					expect(rejectedReason).toEqual 'not feeling like it'
+		describe ' property of referenced resource is specified', ->
+			beforeEach ->
+				spyOn(r, 'get').andCallFake (id, propertyList = null) ->
+					defer = q.defer()
+					if id == 'id param'
+						defer.resolve 
+					else
+						defer.reject spyGetRejectReason
+					return defer.promise
+				spyOn(r, 'getPropertyDefinition').andCallFake (property) ->
+					if property == 'reference property param'
+						return {type: 'reference', resource: 'Resource', idProperty: 'id param'}
+					else
+						return {type: 'value'}
+			describe ' reference get call and property get call are nominal', ->
+				promisedResult = null
+				beforeEach (done) ->
+					r.navigate('reference property/property', 'id param').then (result) ->
+						promisedResult = result
 						done()
-				describe ' to 2nd reference', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyE/propertyD', 1).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise a list of values', (done) ->
-						expect(promisedResult).toEqual [testData['5']]
-						done()
-				describe ' to 2nd list of references', ->
-					promisedResult = null
-					beforeEach (done) ->
-						r.navigate('propertyE/propertyE', 5).then (result) ->
-							promisedResult = result
-							done()
-					it ' should promise a list of values', (done) ->
-						expect(promisedResult).toEqual [testData['5'], testData['6']]
-						done()
-###
+					it ' should have passed get a resource identifier', ->
+						expect(r.get.callCount).toEqual 1
+						expect(r.get.mostRecentCall.args).toEqual [['id param 1', 'id param 2'], 'property param']
+					it ' should return a promise with the promised value being from get', ->
+						expect(promisedResult).toEqual ['a value 1', 'a value 2']

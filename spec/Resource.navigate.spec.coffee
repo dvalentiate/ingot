@@ -171,6 +171,22 @@ describe 'Resource navigate', ->
 					expect(r.get.calls[0].args).toEqual ['id param', 'reference property param']
 				it ' should return a promise which is rejected', ->
 					expect(rejectedReason).toEqual 'not feeling like it'
+			describe ' referenced resource get rejects promise', ->
+				beforeEach (done) ->
+					spyGetPropertyDefinitionResult =
+						'reference property param': {type: 'reference', resource: 'Resource', idProperty: 'referenced id param'}
+					spyGetResult =
+						'id param': 'referenced id param'
+					spyGetRejectReason = {'referenced id param': 'not feeling like it'}
+					r.navigate('reference property param', 'id param').then null, (reason) ->
+						rejectedReason = reason
+						done()
+				it ' should have passed get a resource identifier', ->
+					expect(r.get.callCount).toEqual 2
+					expect(r.get.calls[0].args).toEqual ['id param', 'reference property param']
+					expect(r.get.calls[1].args).toEqual ['referenced id param']
+				it ' should return a promise which is rejected', ->
+					expect(rejectedReason).toEqual 'not feeling like it'
 		describe ' property of referenced resource is specified', ->
 			beforeEach ->
 				spyOn(r, 'get').andCallFake (id, propertyList = null) ->

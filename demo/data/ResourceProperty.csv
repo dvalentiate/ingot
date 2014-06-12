@@ -1,0 +1,98 @@
+account/			list																		
+	id																				
+	created 																				
+	modified																				
+	profile_id		list																		
+	profile	map	list																		
+account/*/password																					
+	password																				
+profile/			list																		
+	id																				
+	name																				
+	picture_id																				
+	picture	map																			
+profile/*/account																					
+	account_id																				
+	account	map																			
+profile/*/detail																					
+	created																				
+	modified																				
+profile/*/email																					
+	email																				
+profile/*/picture																					
+	picture_id		list																		
+	picture	map	list																		
+profile/*/picture_friend																					
+	picture_id		list																		
+	picture	map	list																		
+profile/*/share_picture_invitee																					
+	share_id		list																		
+	share	map	list																		
+profile/*/share_picture_inviter																					
+	share_id		list																		
+	share	map	list																		
+profile/*/friendship_invitee																					
+	friendship_id		list																		
+	friendship	map	list																		
+profile/*/friendship_inviter																					
+	friendship_id		list																		
+	friendship	map	list																		
+profile/*/friendship_pending_invitee																					
+	friendship_id		list																		
+	friendship	map	list																		
+profile/*/friendship_pending_inviter																					
+	friendship_id		list																		
+	friendship	map	list																		
+picture_public_recipient/																					
+	picture_id		list																		
+	picture	map	list																		
+picture/																					
+	id																				
+	raw																				
+	status			null, 'processing_1', ... 'processing_7'																	
+	url_static_16																				
+	url_static_32																				
+	url_static_64																				
+	url_static_128																				
+	url_static_256																				
+	url_static_512																				
+	url_static_1024																				
+	url_static_2048																				
+	url_static_4096																				
+	url_static_8192																				
+	created																				
+	modified																				
+	credit_id		list																		
+	credit	map	list																		
+picture/*/comment																					
+	comment_id		list																		
+	comment	map	list																		
+picture_credit/																					
+	id																				
+	picture_id																				
+	picture	map																			
+	profile_id																				
+	profile	map																			
+picture_comment/																					
+	id																				
+	picture_id																				
+	picture	map																			
+	profile_author_id																				
+	profile_author	map																			
+	content																				
+	created																				
+friendship/																					
+	id																				
+	profile_inviter_id																				
+	profile_inviter	map																			
+	profile_invitee_id																				
+	profile_invitee	map																			
+	created																				
+share/																					
+	id																				
+	resource_type																				
+	resource_id																				
+	profile_invitee_id																				
+	profile_invitee	map																			
+	profile_inviter_id																				
+	profile_inviter	map																			

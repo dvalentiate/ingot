@@ -1,0 +1,74 @@
+account/								L	SELECT a.id, a.created, a.modified, p.id profile_id FROM account a LEFT JOIN profile p ON a.id = p.account_id WHERE a.id = {X}
+	c										bool	true														// anyone can create account
+		r	u	d	l						list	{A}															// account owner can read account
+account/*/password						PS	null
+		-	u								list	{A}															// account owner can update password, can't view password
+profile/								L	SELECT id, name, picture_id FROM profile p WHERE p.id = {X}
+	c										bool	{A}															// anyone with account owner can create profile
+		r	-	-	-						bool	account/{A}/profile_id										// anyone with profile can read any profile
+		r	u	d	l						list	account/{A}/profile_id										// profile owner can read, update and delete profile
+profile/*/account						RS	SELECT account_id FROM profile p JOIN account a ON p.account_id = a.id WHERE p.id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read account relation
+profile/*/detail						PS	SELECT created, modified FROM profile WHERE id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read detail of profile
+profile/*/email							PS	SELECT email FROM profile WHERE id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read email relation, separation
+profile/*/picture						RL	SELECT picture_id FROM picture_credit WHERE profile_id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read relation to picture
+		r	-								list	account/{A}/profile/friendship_invitee/profile_invitee_id	// friendship invitee of owner can read profile relation to picture
+profile/*/picture_friend				RL	SELECT picture_id FROM picture_credit pc JOIN friendship f ON pc.profile_id = f.inviter_profile_id WHERE f.invitee_profile_id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read relation to friend's pictures
+profile/*/share_picture_invitee			RL	SELECT id FROM share WHERE resource_type = 'picture' AND profile_invitee_id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read relation to shared pictures with them
+profile/*/share_picture_inviter			RL	SELECT id FROM share WHERE resource_type = 'picture' AND profile_inviter_id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read relation to pictures they shared
+profile/*/friendship_invitee			RL	SELECT id FROM friendship WHERE invitee_profile_id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read relation to friendship they are invitee to
+profile/*/friendship_inviter			RL	SELECT id FROM friendship WHERE inviter_profile_id = {X}
+		r	-								list	account/{A}/profile_id										// profile owner can read relation to friendship they are inviter in
+profile/*/friendship_pending_invitee	RL	SELECT id FROM friendship a LEFT JOIN friendship b ON b.invitee_profile_id = {X} AND a.invitee_profile_id = b.inviter_profile_id WHERE a.inviter_profile_id = {X} AND b.id IS NULL
+		r	-								list	account/{A}/profile_id										// profile owner can read relation to friendship initiated by owner but unreciprocated
+profile/*/friendship_pending_inviter	RL	SELECT id FROM friendship a LEFT JOIN friendship b ON b.inviter_profile_id = {X} AND a.inviter_profile_id = b.invitee_profile_id WHERE a.invitee_profile_id = {X} AND b.id IS NULL
+		r	-								list	account/{A}/profile_id										// profile owner can read relation to friendship initiated to owner but unreciprocated
+picture/								L	SELECT id, raw, status, url_static_*, created, modified, picture_credit_id FROM picture p LEFT JOIN picture_credit pc ON p.id = pc.picture_id WHERE p.id = {X}
+	c										bool	account/{A}/profile_id										// anyone with profile can create pictures
+		r	u	d	l						list	account/{A}/profile/picture_id								// can read, update and delete profile owner's profile picture
+		r	-	-	l						list	account/{A}/profile/picture_friend/picture_id				// can read pictures of profile owner's friend
+		r	-	-	l						list	account/{A}/profile/share_picture_invitee/picture_id		// can read pictures shared with profile owner
+		r	-	-	l						list	account/{A}/profile/friendship_invitee/profile_invitee/picture_id	//
+		r	-	-							bool	account/{A}/profile_id && picture/{X}/picture_credit/profile/picture_id	// anyone with profile can read any profile picture
+		r	-	-	l						list	picture_profile/picture_id
+picture/*/comment						RL	SELECT id FROM picture_comment WHERE picture_id = {X}
+		r	-								list	account/{A}/profile/picture_id								// can read relation to picture_comment with profile picture of owner
+		r	-								list	account/{A}/profile/picture/id								// can read relation to picture_comment with pictures of owner
+		r	-								list	account/{A}/profile/picture_friend/picture_id				// can read relation to picture_comment with profile picture of friends of owner
+		r	-								list	account/{A}/profile/share_picture_invitee/picture_id		// can read relation to picture_comment with profile picture of 
+picture_credit/							L	SELECT id, picture_id, profile_id FROM picture_credit WHERE id = {X}
+	c										bool	account/{A}/profile/picture_id								// 
+		r	-	-							list	account/{A}/profile/picture/credit_id						// 
+picture_comment/						L	SELECT id, picture_id, comment, profile_id, created WHERE id = {X}
+	c										bool	account/{A}/profile_id										//
+		r	u	d 							list	account/{A}/profile/picture/comment_id						//
+friendship/								L	SELECT id, inviter_profile_id, invitee_profile_id, created FROM friendship WHERE id = {X}
+	c										bool	account/{A}/profile_id										//
+		r	-	d							list	account/{A}/profile/friendship_inviter/friendship_id		//
+		r	-	-							list	account/{A}/profile/friendship_invitee/friendship_id		//
+share/									L	SELECT id, resource_type, inviter_profile_id, invitee_profile_id, created FROM share WHERE id = {X}
+	c										bool	account/{A}/profile_id										//
+		r	-	d							list	account/{A}/share_picture_inviter/share_id					//
+		r	-	-							list	account/{A}/share_picture_invitee/share_id					//
+
+
+picture_profile/						GRL	SELECT picture_id FROM profile pr ON p.id = pr.picture_id
+		r	-	-	l						bool	account/{A}/profile_id
+
+
+G generator
+R relation
+L list
+P property
+
+					***		r	-	-							bool	[account/{A}/profile_id]/
+					***		r	-	-							list	picture/{X}/picture_credit/profile/picture_id  *** this works when looking a specific resource or a list of resources, not practicle for finding available resources
+					***		r	-	-							list	[profile/*]/picture_id										// can read profile pictures of all profiles, ** this is will be large and points to the need for filtering by access rule **
+					INTENT: pictures that are profile pictures can be viewed by anyone with a profile themselves

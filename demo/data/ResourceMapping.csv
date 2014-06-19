@@ -33,10 +33,10 @@ profile__picture						RL	SELECT picture_id FROM picture_credit WHERE profile_id 
 profile__picture_friendship_invitee		RL	SELECT picture_id FROM picture_credit pc JOIN friendship f ON pc.profile_id = f.profile_inviter_id WHERE f.profile_invitee_id = {X}
 profile__share_picture_invitee			RL	SELECT id "share_id" FROM share WHERE resource_type = 'picture' AND profile_invitee_id = {X}
 profile__share_picture_inviter			RL	SELECT id "share_id" FROM share WHERE resource_type = 'picture' AND profile_inviter_id = {X}
-profile__friendship_invitee				RL	SELECT id "friendship" FROM friendship WHERE profile_invitee_id = {X}
-profile__friendship_inviter				RL	SELECT id "friendship" FROM friendship WHERE profile_inviter_id = {X}
-profile__friendship_pending_invitee		RL	SELECT id "friendship" FROM friendship a LEFT JOIN friendship b ON b.profile_invitee_id = {X} AND a.profile_invitee_id = b.profile_inviter_id WHERE a.profile_inviter_id = {X} AND b.id IS NULL
-profile__friendship_pending_inviter		RL	SELECT id "friendship" FROM friendship a LEFT JOIN friendship b ON b.profile_inviter_id = {X} AND a.profile_inviter_id = b.profile_invitee_id WHERE a.profile_invitee_id = {X} AND b.id IS NULL
+profile__friendship_invitee				RL	SELECT id "friendship_id" FROM friendship WHERE profile_invitee_id = {X}
+profile__friendship_inviter				RL	SELECT id "friendship_id" FROM friendship WHERE profile_inviter_id = {X}
+profile__friendship_pending_invitee		RL	SELECT id "friendship_id" FROM friendship a LEFT JOIN friendship b ON b.profile_invitee_id = {X} AND a.profile_invitee_id = b.profile_inviter_id WHERE a.profile_inviter_id = {X} AND b.id IS NULL
+profile__friendship_pending_inviter		RL	SELECT id "friendship_id" FROM friendship a LEFT JOIN friendship b ON b.profile_inviter_id = {X} AND a.profile_inviter_id = b.profile_invitee_id WHERE a.profile_invitee_id = {X} AND b.id IS NULL
 
 picture									L	SELECT id, raw, status, url_static_*, created, modified, pc.id "picture_credit_id" FROM picture p LEFT JOIN picture_credit pc ON p.id = pc.picture_id WHERE p.id = {X}
 											RL	picture_comment				id					picture__picture_comment
@@ -45,13 +45,11 @@ picture									L	SELECT id, raw, status, url_static_*, created, modified, pc.id
 		r	u	d			bool	{A}/account/profile/portrait_picture_id = {X}						// can read, update and delete profile owner's profile picture
 		r	-	-			rlsp	{A}/account/profile/picture											// can read pictures that the profile owner has credit for
 		r	-	-			bool	{X}/picture__profile_picture_credit/profile_id = {A}/account/profile/friendship_invitee/profile_inviter_id	// can read pictures of profile owner's friends
+		r	-	-			bool	{X}/picture_portrait_picture__profile/profile_id = {A}/account/profile/friendship_invitee/profile_inviter_id	// can read profile pictures of friends  ^ is subset of above ^
 		r	-	-			bool	{X}/picture__share/picture/id = {X}									// can read pictures shared with profile owner
-		r	-	-			bool	{X}/picture_portrait_picture__profile/id = {A}/account/profile/friendship_invitee/profile_inviter_id	// can read profile pictures of friends  ^ is subset of picture_friendship_invitee ^
-		r	-	-			bool	{X}/picture_portrait_picture__profile/id = {A}/account/profile/friendship_invitee/profile_inviter_id	// can read profile pictures of friends  ^ is subset of picture_friendship_invitee ^
-
 		r	-	-			bool	{X}/picture_portrait_picture__profile/portrait_picture_id = {X}		// anyone with profile can read any profile picture
-					l		list	{A}/account/profile/portrait_picture_id								// can list profile owner's own profile picture
-					l		list	{A}/account/profile/picture/id										// can list pictures of the user's  ^ is superset of portrait_picture_id ^
+					l		list	{A}/account/profile/picture/id										// user can list their own pictures
+					l		list	{A}/account/profile/portrait_picture_id								// can list profile owner's own profile picture ^ is subset of portrait_picture_id ^
 picture__picture_comment				RL	SELECT id "picture_commend_id" FROM picture_comment WHERE picture_id = {X}
 picture_portrait_picture__profile		RL	SELECT id "profile_id" FROM profile WHERE portrait_picture_id = {X}
 picture__share							RL	SELECT id "share_id" FROM share WHERE type = 'picture' AND resource_id = {X}

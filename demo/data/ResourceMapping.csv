@@ -7,8 +7,9 @@ account									L	SELECT a.id, a.created, a.modified, p.id profile_id FROM accou
 account-password						PS	null
 		-	u				bool	{A} = {X}															// account owner can update password, can't view password
 
-profile									L	SELECT id, name, portrait_picture_id FROM profile p WHERE p.id = {X}
+profile									L	SELECT id, name, picture_portrait_id FROM profile p WHERE p.id = {X}
 											RS	account						id					profile__account
+											RS	picture-portrait			picture_portrait_id	picture
 											PS	detail						id					profile-detail
 											PS	email						id					profile-email
 											RL	picture						id					profile__picture
@@ -44,16 +45,16 @@ picture									L	SELECT id, raw, status, url_static_*, created, modified, pc.id
 											RL	picture_comment				id					picture__picture_comment
 											RL	picture_credit				picture_credit_id	picture_credit
 	c						bool	{A}/account/profile_id												// anyone with profile can create pictures
-		r	u	d			bool	{A}/account/profile/portrait_picture_id = {X}						// can read, update and delete profile owner's profile picture
+		r	u	d			bool	{A}/account/profile/picture_portrait_id = {X}						// can read, update and delete profile owner's profile picture
 		r	-	-			rlsp	{A}/account/profile/picture											// can read pictures that the profile owner has credit for
 		r	-	-			bool	{X}/picture__profile-picture_credit/profile_id = {A}/account/profile/friendship-invitee/profile_inviter_id	// can read pictures of profile owner's friends
 		r	-	-			bool	{X}/picture-portrait-picture__profile/profile_id = {A}/account/profile/friendship-invitee/profile_inviter_id	// can read profile pictures of friends  ^ is subset of above ^
 		r	-	-			bool	{X}/picture__share/picture/id = {X}									// can read pictures shared with profile owner
-		r	-	-			bool	{X}/picture-portrait-picture__profile/portrait_picture_id = {X}		// anyone with profile can read any profile picture
-					l		list	{A}/account/profile/picture/id										// user can list their own pictures
-					l		list	{A}/account/profile/portrait_picture_id								// can list profile owner's own profile picture ^ is subset of portrait_picture_id ^
+		r	-	-			bool	{X}/picture-portrait-picture__profile/picture_portrait_id = {X}		// anyone with profile can read any profile picture
+					l		rlsp	{A}/account/profile/picture											// user can list their own pictures
+					l		list	{A}/account/profile/picture_portrait_id								// can list profile owner's own profile picture ^ is subset of picture_portrait_id ^
 picture__picture_comment				RL	SELECT id "picture_commend_id" FROM picture_comment WHERE picture_id = {X}
-picture-portrait-picture__profile		RL	SELECT id "profile_id" FROM profile WHERE portrait_picture_id = {X}
+picture-portrait-picture__profile		RL	SELECT id "profile_id" FROM profile WHERE picture_portrait_id = {X}
 picture__share							RL	SELECT id "share_id" FROM share WHERE type = 'picture' AND resource_id = {X}
 picture__profile-picture_credit			RL	SELECT profile_id FROM picture_credit WHERE picture_id = {X}
 

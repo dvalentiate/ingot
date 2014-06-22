@@ -1,6 +1,6 @@
 {
   "name": "ingotjs",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "description": "REST API Wtih Access Control",
   "keywords": [
     "REST",
@@ -14,8 +14,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "gulp-util": "~2.2.14",
-    "gulp": "~3.5.2",
     "requirejs": "~2.1.10"
-  }
+  },
+  "author": "David Valentiate"
 }

@@ -40,6 +40,7 @@ profile__friendship-inviter				RL	SELECT id "friendship_id" FROM friendship WHER
 profile__friendship-pending-invitee		RL	SELECT id "friendship_id" FROM friendship a LEFT JOIN friendship b ON b.profile_invitee_id = {X} AND a.profile_invitee_id = b.profile_inviter_id WHERE a.profile_inviter_id = {X} AND b.id IS NULL
 profile__friendship-pending-inviter		RL	SELECT id "friendship_id" FROM friendship a LEFT JOIN friendship b ON b.profile_inviter_id = {X} AND a.profile_inviter_id = b.profile_invitee_id WHERE a.profile_invitee_id = {X} AND b.id IS NULL
 profile__picture_credit					RL	SELECT id "picture_credit_id" FROM picture_credit WHERE profile_id = {X}
+profile__profile_friend-of-friend		RL	SELECT f2.profile_iniviter_id FROM friendship f1 JOIN friendship f2 ON f1.profile_iniviter_id = f2.profile_inivitee_id WHERE f1.profile_inivitee_id = {X}
 
 picture									L	SELECT id, raw, status, url_static_*, created, modified, pc.id "picture_credit_id" FROM picture p LEFT JOIN picture_credit pc ON p.id = pc.picture_id WHERE p.id = {X}
 											RL	picture_comment				id					picture__picture_comment
@@ -97,8 +98,6 @@ share									L	SELECT id, resource_type, resource_id, profile_inviter_id, profi
 		r	-	d			rlsp	{A}/account/profile/share-picture-inviter					 		// user can read, delete a share that they initiated
 					l		rlsp	{A}/account/profile/share-picture-invitee							// user can list shares that they are the invitee to
 					l		rlsp	{A}/account/profile/share-picture-inviter							// user can list shares that they initiated
-share__profile-inviter					RS	SELECT profile_inviter_id FROM share WHERE id = {X}
-share__profile-invitee					RS	SELECT profile_invitee_id FROM share WHERE id = {X}
 share__picture							RS	SELECT resource_id FROM share WHERE type = 'picture' AND id = {X}
 
 // example of a generator: would list every profie picture

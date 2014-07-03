@@ -1,6 +1,6 @@
 {
-  "name": "ingotjs",
-  "version": "0.0.2",
+  "name": "ingot",
+  "version": "0.0.3",
   "description": "REST API Wtih Access Control",
   "keywords": [
     "REST",
@@ -13,8 +13,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
+  "dependencies": {
     "requirejs": "~2.1.10"
+  },
+  "devDependencies": {
   },
   "author": "David Valentiate"
 }

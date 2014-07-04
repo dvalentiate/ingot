@@ -1,8 +1,6 @@
-ingotjs = {
-	Resource: require './Resource'
-	CrudResource: require './CrudResource'
-	ResourceFactory: require './ResourceFactory'
-	Util: require './Util'
-}
+# ingotjs index
 
-module.exports = ingotjs
+module.exports.Resource = require './Resource'
+module.exports.CrudResource = require './CrudResource'
+module.exports.ResourceFactory = require './ResourceFactory'
+module.exports.Util = require './Util'

@@ -39,8 +39,8 @@ profile__friendship-invitee				RL	SELECT id "friendship_id" FROM friendship WHER
 profile__friendship-inviter				RL	SELECT id "friendship_id" FROM friendship WHERE profile_inviter_id = {X}
 profile__friendship-pending-invitee		RL	SELECT id "friendship_id" FROM friendship a LEFT JOIN friendship b ON b.profile_invitee_id = {X} AND a.profile_invitee_id = b.profile_inviter_id WHERE a.profile_inviter_id = {X} AND b.id IS NULL
 profile__friendship-pending-inviter		RL	SELECT id "friendship_id" FROM friendship a LEFT JOIN friendship b ON b.profile_inviter_id = {X} AND a.profile_inviter_id = b.profile_invitee_id WHERE a.profile_invitee_id = {X} AND b.id IS NULL
-profile__picture_credit					RL	SELECT id "picture_credit_id" FROM picture_credit WHERE profile_id = {X}
-profile__profile_friend-of-friend		RL	SELECT f2.profile_iniviter_id FROM friendship f1 JOIN friendship f2 ON f1.profile_iniviter_id = f2.profile_inivitee_id WHERE f1.profile_inivitee_id = {X}
+profile__picture-credit					RL	SELECT id "picture_credit_id" FROM picture_credit WHERE profile_id = {X}
+profile__profile-friend-of-friend		RL	SELECT f2.profile_iniviter_id FROM friendship f1 JOIN friendship f2 ON f1.profile_iniviter_id = f2.profile_inivitee_id WHERE f1.profile_inivitee_id = {X}
 
 picture									L	SELECT id, raw, status, url_static_*, created, modified, pc.id "picture_credit_id" FROM picture p LEFT JOIN picture_credit pc ON p.id = pc.picture_id WHERE p.id = {X}
 											RL	picture_comment				id					picture__picture_comment
@@ -48,35 +48,35 @@ picture									L	SELECT id, raw, status, url_static_*, created, modified, pc.id
 	c						bool	{A}/account/profile_id												// anyone with profile can create pictures
 		r	u	d			bool	{A}/account/profile/picture_portrait_id = {X}						// can read, update and delete profile owner's profile picture
 		r	-	-			rlsp	{A}/account/profile/picture											// can read pictures that the profile owner has credit for
-		r	-	-			bool	{X}/picture__profile-picture_credit/profile_id = {A}/account/profile/friendship-invitee/profile_inviter_id	// can read pictures of profile owner's friends
+		r	-	-			bool	{X}/picture__profile-picture-credit/profile_id = {A}/account/profile/friendship-invitee/profile_inviter_id	// can read pictures of profile owner's friends
 		r	-	-			bool	{X}/picture-portrait-picture__profile/profile_id = {A}/account/profile/friendship-invitee/profile_inviter_id	// can read profile pictures of friends  ^ is subset of above ^
 		r	-	-			bool	{X}/picture__share/picture/id = {X}									// can read pictures shared with profile owner
 		r	-	-			bool	{X}/picture-portrait-picture__profile/picture_portrait_id = {X}		// anyone with profile can read any profile picture
 					l		rlsp	{A}/account/profile/picture											// user can list their own pictures
 					l		list	{A}/account/profile/picture_portrait_id								// can list profile owner's own profile picture ^ is subset of picture_portrait_id ^
-picture__picture_comment				RL	SELECT id "picture_commend_id" FROM picture_comment WHERE picture_id = {X}
+picture__picture-comment				RL	SELECT id "picture_commend_id" FROM picture_comment WHERE picture_id = {X}
 picture-portrait-picture__profile		RL	SELECT id "profile_id" FROM profile WHERE picture_portrait_id = {X}
 picture__share							RL	SELECT id "share_id" FROM share WHERE type = 'picture' AND resource_id = {X}
-picture__profile-picture_credit			RL	SELECT profile_id FROM picture_credit WHERE picture_id = {X}
+picture__profile-picture-credit			RL	SELECT profile_id FROM picture_credit WHERE picture_id = {X}
 
-picture_credit							L	SELECT id, picture_id, profile_id FROM picture_credit WHERE id = {X}
+picture-credit							L	SELECT id, picture_id, profile_id FROM picture_credit WHERE id = {X}
 											RS	picture						picture_id			picture
 											RS	profile						profile_id			profile
 	c						bool	{A}/account/profile_id												// anyone with profile can create a picture credit (validatity of picture credit params are done with validator)
 		r	-	-			bool	{X}/picture_credit__picture/id = {X}								// user can read a picture_credit of a picture that they can read
 		r	u	d			bool	{A}/account/profile_id = {X}/picture_credit__profile/id				// user can read, updated delete their own picture credits
 					l		rlsp	{A}/account/profile/profile__picture_credit							// user can list picture credits that reference them
-picture_credit__profile					RL	SELECT profile_id FROM picture_credit WHERE id = {X}
-picture_credit__picture					RL	SELECT picture_id FROM picture_credit WHERE id = {X}
+picture-credit__picture					RL	SELECT picture_id FROM picture_credit WHERE id = {X}
+picture-credit__profile					RL	SELECT profile_id FROM picture_credit WHERE id = {X}
 
-picture_comment							L	SELECT id, picture_id, comment, profile_id, created FROM picture_comment WHERE id = {X}
+picture-comment							L	SELECT id, picture_id, comment, profile_id, created FROM picture_comment WHERE id = {X}
 											RS	picture						picture_id			picture
 											RS	profile						profile_id			profile
 	c						bool	{A}/account/profile_id												// anyone with profie can create a picture comment
-		r	-	- 			bool	{X}/picture_comment__picture/id = {X}								// user can read a picture_comment of a picture that they can read
-		r	u	d			bool	{A}/account/profile_id = {X}/picture_comment__profile/id			// user can read, updated delete their own picture comments
-picture_comment__profile				RL	SELECT profile_id FROM picture_comment WHERE id = {X}
-picture_comment__picture				RL	SELECT picture_id FROM picture_comment WHERE id = {X}
+		r	-	- 			bool	{X}/picture-comment__picture/id = {X}								// user can read a picture_comment of a picture that they can read
+		r	u	d			bool	{A}/account/profile_id = {X}/picture-comment__profile/id			// user can read, updated delete their own picture comments
+picture-comment__picture				RL	SELECT picture_id FROM picture_comment WHERE id = {X}
+picture-comment__profile				RL	SELECT profile_id FROM picture_comment WHERE id = {X}
 
 friendship								L	SELECT id, profile_inviter_id, profile_invitee_id, created FROM friendship WHERE id = {X}
 											RS	profile_inviter				profile_inviter_id	profile
@@ -99,9 +99,11 @@ share									L	SELECT id, resource_type, resource_id, profile_inviter_id, profi
 					l		rlsp	{A}/account/profile/share-picture-invitee							// user can list shares that they are the invitee to
 					l		rlsp	{A}/account/profile/share-picture-inviter							// user can list shares that they initiated
 share__picture							RS	SELECT resource_id FROM share WHERE type = 'picture' AND id = {X}
+share__profile-invitee					RS	SELECT profile_invitee_id FROM share WHERE id = {X}
+share__profile-inviter					RS	SELECT profile_inviter_id FROM share WHERE id = {X}
 
 // example of a generator: would list every profie picture
-picture_profile						GRL	SELECT picture_id FROM profile pr WHERE picture_id IS NOT NULL
+picture-profile						GRL	SELECT picture_id FROM profile pr WHERE picture_id IS NOT NULL
 		r	-	-	l		bool	{A}/account/profile_id
 
 

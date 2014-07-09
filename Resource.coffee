@@ -8,11 +8,9 @@ class Resource
 	constructor: ->
 	getPropertySet: ->
 		return _.keys @propertyMap
-	setAccessContext: (account) ->
-		@account = account
+	setAccessContext: (@account) ->
 		return @
-	setResourceFactory: (resourceFactory) ->
-		@resourceFactory = resourceFactory
+	setResourceFactory: (@resourceFactory) ->
 		return @
 	getResourceFactory: ->
 		if @resourceFactory == null

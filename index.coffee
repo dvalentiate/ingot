@@ -3,4 +3,4 @@
 module.exports.Resource = require './Resource'
 module.exports.CrudResource = require './CrudResource'
 module.exports.ResourceFactory = require './ResourceFactory'
-module.exports.Util = require './Util'
+module.exports.util = require './util'

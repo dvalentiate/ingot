@@ -1,7 +1,7 @@
 Resource = require './Resource'
 _ = require 'lodash'
 q = require 'q'
-Util = require './Util'
+util = require './util'
 
 # abstract
 class CrudResource extends Resource
@@ -9,19 +9,19 @@ class CrudResource extends Resource
 		if propertyList == null
 			return @safeCrudRead id
 		if _.isArray propertyList
-			return Util.reject "get method doesn't support array of properties ... yet"
+			return util.reject "get method doesn't support array of properties ... yet"
 		definition = @getPropertyDefinition propertyList
 		if definition == null
-			return Util.reject "INVALID PROPERTY - UNKNOWN : #{ propertyList } is not a propertyList of #{ @name }"
+			return util.reject "INVALID PROPERTY - UNKNOWN : #{ propertyList } is not a propertyList of #{ @name }"
 		if definition.type == 'reference'
 			referenceIdDefinition = @getPropertyDefinition definition.idProperty
 			if referenceIdDefinition == null
-				return Util.reject "INVALID REFERENCE - UNKNOWN PROPERTY : #{ definition.idProperty } referenced by #{ propertyList } definition but doesn't exist"
+				return util.reject "INVALID REFERENCE - UNKNOWN PROPERTY : #{ definition.idProperty } referenced by #{ propertyList } definition but doesn't exist"
 			if referenceIdDefinition.type == 'reference'
-				return Util.reject "INVALID REFERENCE - TYPE : #{ definition.idProperty } is not a value or value list as required by #{ propertyList } definition"
+				return util.reject "INVALID REFERENCE - TYPE : #{ definition.idProperty } is not a value or value list as required by #{ propertyList } definition"
 			referencedResource = @getResourceFactory().getResource definition.resource
 			if referencedResource == null
-				return Util.reject "INVALID REFERENCE - RESOURCE : #{ definition.resource } was not provided by the resource factory"
+				return util.reject "INVALID REFERENCE - RESOURCE : #{ definition.resource } was not provided by the resource factory"
 			if referenceIdDefinition.type == 'value'
 				return @get(id, definition.idProperty).then (referencedId) ->
 					return referencedResource.safeCrudRead referencedId
@@ -38,7 +38,7 @@ class CrudResource extends Resource
 			return @safeCrudRead id, propertyList
 		if definition.type == 'valueList'
 			return @safeCrudRead id, propertyList
-		return Util.reject "INVALID PROPERTY - TYPE : #{ definition.type } is not a recognized propertyList type"
+		return util.reject "INVALID PROPERTY - TYPE : #{ definition.type } is not a recognized propertyList type"
 	post: (data = null, propertyList = null) ->
 		return @safeCrudCreate data, propertyList
 	put: (id, data = null, propertyList = null) ->
@@ -84,22 +84,22 @@ class CrudResource extends Resource
 		try
 			return @crudCreate data, propertyList
 		catch exception
-			return Util.reject exception
+			return util.reject exception
 	safeCrudRead: (id, propertyList = null) ->
 		try
 			return @crudRead id, propertyList
 		catch exception
-			return Util.reject exception
+			return util.reject exception
 	safeCrudUpdate: (id, data = null, propertyList = null) ->
 		try
 			return @crudUpdate id, data, propertyList
 		catch exception
-			return Util.reject exception
+			return util.reject exception
 	safeCrudDelete: (id) ->
 		try
 			return @crudDelete id
 		catch exception
-			return Util.reject exception
+			return util.reject exception
 	crudCreate: (data = null, propertyList = null) ->
 	crudRead: (id, propertyList = null) ->
 	crudUpdate: (id, data = null, propertyList = null) ->

@@ -3,11 +3,11 @@ q = require 'q'
 util = {
 	reject: (reason = null) ->
 		defer = q.defer()
-		defer.reject(reason)
+		defer.reject reason
 		return defer.promise
 	resolve: (result = null) ->
 		defer = q.defer()
-		defer.reject(reason)
+		defer.resolve result
 		return defer.promise
 }
 

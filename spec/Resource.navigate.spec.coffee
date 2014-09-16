@@ -57,7 +57,7 @@ describe 'Resource navigate', ->
 	describe ' path', ->
 		describe ' a value with any resourceObj', ->
 			beforeEach ->
-				spyGetPropertyDefinitionResult = {type: 'value'}
+				spyGetPropertyDefinitionResult = type: 'value'
 			describe ' get is nominal', ->
 				beforeEach (done) ->
 					spyGetResult = 'a value'
@@ -82,7 +82,7 @@ describe 'Resource navigate', ->
 					expect(rejectedReason).toEqual spyGetRejectReason
 		describe ' a value list', ->
 			beforeEach ->
-				spyGetPropertyDefinitionResult = {type: 'valueList'}
+				spyGetPropertyDefinitionResult = type: 'valueList'
 			describe ' a non singular resourceObj', ->
 				describe ' get is nominal', ->
 					beforeEach (done) ->
@@ -162,7 +162,7 @@ describe 'Resource navigate', ->
 				beforeEach (done) ->
 					spyGetPropertyDefinitionResult =
 						'reference property param': {type: 'reference', resource: 'Resource', idProperty: 'referenced id param'}
-					spyGetRejectReason = {'id param': 'not feeling like it'}
+					spyGetRejectReason = 'id param': 'not feeling like it'
 					r.navigate('reference property param', 'id param').then null, (reason) ->
 						rejectedReason = reason
 						done()
@@ -177,7 +177,7 @@ describe 'Resource navigate', ->
 						'reference property param': {type: 'reference', resource: 'Resource', idProperty: 'referenced id param'}
 					spyGetResult =
 						'id param': 'referenced id param'
-					spyGetRejectReason = {'referenced id param': 'not feeling like it'}
+					spyGetRejectReason = 'referenced id param': 'not feeling like it'
 					r.navigate('reference property param', 'id param').then null, (reason) ->
 						rejectedReason = reason
 						done()

@@ -1,6 +1,6 @@
 q = require 'q'
 
-util = {
+util =
 	reject: (reason = null) ->
 		defer = q.defer()
 		defer.reject reason
@@ -9,6 +9,5 @@ util = {
 		defer = q.defer()
 		defer.resolve result
 		return defer.promise
-}
 
 module.exports = util

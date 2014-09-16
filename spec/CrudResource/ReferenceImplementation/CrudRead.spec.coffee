@@ -65,11 +65,11 @@ describe 'CrudResource crudRead', ->
 	describe ' a value id is an object', ->
 		describe ' no property specified', ->
 			promisedResult = null
-			obj = {
+			obj =
 				propertyA: 1
 				propertyB: 5
 				propertyX: [5, 6]
-			}
+			
 			beforeEach (done) ->
 				r.crudRead(obj).then (result) ->
 					promisedResult = result
@@ -79,11 +79,11 @@ describe 'CrudResource crudRead', ->
 				done()
 		describe ' value property specified', ->
 			promisedResult = null
-			obj = {
+			obj =
 				propertyA: 1
 				propertyB: 5
 				propertyX: [5, 6]
-			}
+			
 			beforeEach (done) ->
 				r.crudRead(obj, 'propertyA').then (result) ->
 					promisedResult = result

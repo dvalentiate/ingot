@@ -11,11 +11,11 @@ describe 'CrudResource crudCreate', ->
 	describe ' a value', ->
 		describe ' with a specified but non conflicting id property', ->
 			promisedResult = null
-			obj = {
+			obj =
 				propertyA: 3
 				propertyB: 6
 				propertyC: [6]
-			}
+			
 			beforeEach (done) ->
 				r.crudCreate(obj).then (result) ->
 					promisedResult = result
@@ -30,11 +30,11 @@ describe 'CrudResource crudCreate', ->
 				done()
 		describe ' with a specified but conflicting id property', ->
 			promisedResult = null
-			obj = {
+			obj =
 				propertyA: 1
 				propertyB: 6
 				propertyC: [6]
-			}
+			
 			beforeEach (done) ->
 				r.crudCreate(obj).then (result) ->
 					promisedResult = result
@@ -50,11 +50,11 @@ describe 'CrudResource crudCreate', ->
 				done()
 		describe ' with null id property', ->
 			promisedResult = null
-			obj = {
+			obj =
 				propertyA: null
 				propertyB: 6
 				propertyC: [6]
-			}
+			
 			beforeEach (done) ->
 				r.crudCreate(obj).then (result) ->
 					promisedResult = result
@@ -70,10 +70,10 @@ describe 'CrudResource crudCreate', ->
 				done()
 		describe ' with non specified id property', ->
 			promisedResult = null
-			obj = {
+			obj =
 				propertyB: 6
 				propertyC: [6]
-			}
+			
 			beforeEach (done) ->
 				r.crudCreate(obj).then (result) ->
 					promisedResult = result

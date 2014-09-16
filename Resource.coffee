@@ -20,10 +20,10 @@ class Resource
 	can: (verb, id = null) ->
 		# no real clue yet on what I'm doing with this
 		# 
-		# navigation = {
+		# navigation =
 		# 	path: ''
 		# 	idList: []
-		# }
+		# 
 		# for rule in @access[verb]
 		# 	partList = rule.path.split '/'
 		# 	for part, i in partList
@@ -41,7 +41,7 @@ class Resource
 			return null
 		definition = @propertyMap[property]
 		if typeof definition == 'string'
-			definition = {type: definition}
+			definition = type: definition
 		return definition
 	navigate: (path, resourceObj) ->
 		if _.isString path

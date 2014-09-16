@@ -72,7 +72,7 @@ describe 'Resource get', ->
 	describe ' propertyList uses a reference that specifies an invalid id property', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyA'] = {type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyM'}
+			r.propertyMap['badPropertyA'] = type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyM'
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyA').then null, (reason) ->
 				promisedReason = reason
@@ -84,7 +84,7 @@ describe 'Resource get', ->
 	describe ' propertyList uses a reference that specifies a property to another reference', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyB'] = {type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyD'}
+			r.propertyMap['badPropertyB'] = type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyD'
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyB').then null, (reason) ->
 				promisedReason = reason
@@ -96,7 +96,7 @@ describe 'Resource get', ->
 	describe ' propertyList uses a reference that specifies an invalid resource', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyC'] = {type: 'reference', resource: 'InvalidResource', idProperty: 'propertyB'}
+			r.propertyMap['badPropertyC'] = type: 'reference', resource: 'InvalidResource', idProperty: 'propertyB'
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyC').then null, (reason) ->
 				promisedReason = reason
@@ -108,7 +108,7 @@ describe 'Resource get', ->
 	describe ' propertyList uses a reference that specifies an invalid type', ->
 		promisedReason = null
 		beforeEach (done) ->
-			r.propertyMap['badPropertyD'] = {type: 'invalidType', resource: 'SampleCrudResource', idProperty: 'propertyB'}
+			r.propertyMap['badPropertyD'] = type: 'invalidType', resource: 'SampleCrudResource', idProperty: 'propertyB'
 			spyOn(r, 'crudRead').andReturn null
 			r.get('id param', 'badPropertyD').then null, (reason) ->
 				promisedReason = reason

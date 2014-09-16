@@ -6,27 +6,25 @@ class ReferenceImplementationCrudResource extends CrudResource
 	data: null
 	name: 'SampleCrudResource'
 	path: 'sample-crud-resource'
-	propertyMap: {
+	propertyMap:
 		'propertyA':    'value'
 		'propertyB':    'value'
 		'propertyC':    'valueList'
-		'propertyD':    {type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyB'}
-		'propertyE':    {type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyC'}
-	}
-	access: {
+		'propertyD':    type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyB'
+		'propertyE':    type: 'reference', resource: 'SampleCrudResource', idProperty: 'propertyC'
+	access:
 		create: [
-			{matchType: 'boolean', path: '{true}'}
+			matchType: 'boolean', path: '{true}'
 		]
 		read: [
-			{matchType: 'boolean', path: '{true}'}
+			matchType: 'boolean', path: '{true}'
 		]
 		update: [
-			{matchType: 'boolean', path: '{true}'}
+			matchType: 'boolean', path: '{true}'
 		]
 		delete: [
-			{matchType: 'boolean', path: '{true}'}
+			matchType: 'boolean', path: '{true}'
 		]
-	}
 	idProperty: 'propertyA'
 	setData: (data) ->
 		@data = data

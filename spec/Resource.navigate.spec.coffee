@@ -145,7 +145,7 @@ describe 'Resource navigate', ->
 			describe ' get is nominal', ->
 				beforeEach (done) ->
 					spyGetPropertyDefinitionResult =
-						'reference property param': {type: 'reference', resource: 'Resource', idProperty: 'referenced id param'}
+						'reference property param': type: 'reference', resource: 'Resource', idProperty: 'referenced id param'
 					spyGetResult =
 						'id param': 'referenced id param'
 						'referenced id param': 'an object'
@@ -161,7 +161,7 @@ describe 'Resource navigate', ->
 			describe ' reference get rejects promise', ->
 				beforeEach (done) ->
 					spyGetPropertyDefinitionResult =
-						'reference property param': {type: 'reference', resource: 'Resource', idProperty: 'referenced id param'}
+						'reference property param': type: 'reference', resource: 'Resource', idProperty: 'referenced id param'
 					spyGetRejectReason = 'id param': 'not feeling like it'
 					r.navigate('reference property param', 'id param').then null, (reason) ->
 						rejectedReason = reason
@@ -174,7 +174,7 @@ describe 'Resource navigate', ->
 			describe ' referenced resource get rejects promise', ->
 				beforeEach (done) ->
 					spyGetPropertyDefinitionResult =
-						'reference property param': {type: 'reference', resource: 'Resource', idProperty: 'referenced id param'}
+						'reference property param': type: 'reference', resource: 'Resource', idProperty: 'referenced id param'
 					spyGetResult =
 						'id param': 'referenced id param'
 					spyGetRejectReason = 'referenced id param': 'not feeling like it'

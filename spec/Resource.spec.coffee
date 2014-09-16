@@ -10,8 +10,8 @@ describe 'Resource', ->
 			propertyB: 'value'
 			propertyC: 'valueList'
 			propertyD: 'valueList'
-			propertyE: {type: 'reference', resource: 'Resource', idProperty: 'propertyA'}
-			propertyF: {type: 'reference', resource: 'Resource', idProperty: 'propertyC'}
+			propertyE: type: 'reference', resource: 'Resource', idProperty: 'propertyA'
+			propertyF: type: 'reference', resource: 'Resource', idProperty: 'propertyC'
 		
 	it ' should return a property set', ->
 		expect(r.getPropertySet()).toEqual [
